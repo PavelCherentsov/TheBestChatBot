@@ -11,7 +11,6 @@ public class Bot {
         dictionary.put("Авторы", Commands::owners);
         dictionary.put("echo", Commands::echo);
         dictionary.put("quit", Commands::quit);
-        dictionary.put("study", Commands::study);
         cmdStart(System.out::println);
     }
 
@@ -21,14 +20,22 @@ public class Bot {
         var command = "";
         while (!command.equals("quit") && in.hasNextLine()){
             command = in.nextLine();
-            try
+            if (command.equals("study"))
             {
-                print.accept(dictionary.get(command.split(" ")[0]).apply(command));
+                Commands.study(in);
+                continue;
             }
-            catch (NullPointerException e)
-            {
-                print.accept(dictionary.get("help").apply(command));
+            else{
+                try
+                {
+                    print.accept(dictionary.get(command.split(" ")[0]).apply(command));
+                }
+                catch (NullPointerException e)
+                {
+                    print.accept(dictionary.get("help").apply(command));
+                }
             }
+
         }
         in.close();
     }

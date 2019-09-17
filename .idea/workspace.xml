@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1f5f4ad0-eda8-41aa-b611-6b71d7cecffb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatBot/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatBot/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatBot/Bot.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatBot/Bot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatBot/Commands.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatBot/Commands.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Commands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Commands.java" afterDir="false" />
     </list>

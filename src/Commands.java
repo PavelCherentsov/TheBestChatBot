@@ -23,20 +23,19 @@ public class Commands {
         return "Пока-пока :_(";
     }
 
-    public static String study(String command)
+    public static String study(Scanner in)
     {
         System.out.println("Напиши 'пары' - получи расписание\n" +
                 "quit - выход");
-        Scanner input = new Scanner(System.in);
         var word = "";
         while(true)
         {
-            word = input.nextLine();
+            word = in.nextLine();
             System.out.println(word);
             if (word.equals("пары"))
             {
                 System.out.println("Введи день недели (в формате: Пн, Вт, Ср, Чт, Пт)");
-                var day = input.nextLine();
+                var day = in.nextLine();
                 getSchedule(day);
                 System.out.println("Возврат в раздел учёбки (study)");
             }
@@ -54,7 +53,6 @@ public class Commands {
                 System.out.println("Напиши 'help' - тебе помогут");
             }
         }
-        input.close();
         return "...Выход...";
     }
 
