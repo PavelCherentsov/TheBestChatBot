@@ -1,5 +1,7 @@
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Bot {
@@ -8,20 +10,21 @@ public class Bot {
         dictionary.put("help", Commands::help);
         dictionary.put("Авторы", Commands::owners);
         dictionary.put("echo", Commands::echo);
-        cmdStart();
+        dictionary.put("quit", Commands::quit);
+        cmdStart(System.out::println);
     }
 
-    public void cmdStart(){
+    public void cmdStart(Consumer<String> print){
         Scanner in = new Scanner(System.in);
-        var i = 1;
         while (true){
             var command = in.nextLine();
             try {
-                System.out.println(dictionary.get(command.split(" ")[0]).apply(command));
-            }catch (NullPointerException e){
-                System.out.println(dictionary.get("help").apply(command));
+                print.accept(dictionary.get(command.split(" ")[0]).apply(command));
+            }catch (NullPointerException e) {
+                print.accept(dictionary.get("help").apply(command));
             }
-            if (i == 0) break;
+            if (command.split(" ")[0].equals("quit"))
+                break;
         }
         in.close();
     }

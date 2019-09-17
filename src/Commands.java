@@ -13,4 +13,8 @@ public class Commands {
     public static String echo(String command){
         return command.substring(5);
     }
+
+    public static String quit(String command){
+        return "Пока-пока :_(";
+    }
 }
