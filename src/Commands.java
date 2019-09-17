@@ -11,6 +11,6 @@ public class Commands {
     }
 
     public static String echo(String command){
-        return res.substring(5);
+        return command.substring(5);
     }
 }
