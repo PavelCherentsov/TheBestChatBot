@@ -5,8 +5,9 @@ public class Commands {
     public static String help(String command){
         return "Я могу:\n" +
                 "help - список возможностей\n" +
-                "Авторы - те, кто создал меня\n" +
+                "авторы - те, кто создал меня\n" +
                 "echo - повторю за тобой\n" +
+                "study - информация для учебы\n" +
                 "quit - попрощаться";
     }
 
@@ -25,7 +26,7 @@ public class Commands {
     public static String study(String command)
     {
         System.out.println("Напиши 'пары' - получи расписание\n" +
-                "somecommand - выход в главное меню");
+                "quit - выход");
         Scanner input = new Scanner(System.in);
         var word = "";
         while(true)
@@ -41,13 +42,12 @@ public class Commands {
             }
             else if (word.equals("quit"))
             {
-                System.out.println("I QUIT");
                 break;
             }
             else if (word.equals("help"))
             {
                 System.out.println("Напиши 'пары' - получи расписание\n" +
-                        "somecommand - выход в главное меню");
+                        "quit - выход");
             }
             else
             {
@@ -55,8 +55,7 @@ public class Commands {
             }
         }
         input.close();
-        System.out.println("end of study");
-        return "...Возврат в главное меню...";
+        return "...Выход...";
     }
 
     public static void getSchedule(String day)
