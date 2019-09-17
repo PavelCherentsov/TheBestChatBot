@@ -11,11 +11,6 @@ public class Commands {
     }
 
     public static String echo(String command){
-        var array = command.split(" ");
-        var res = "";
-        for (int i=1; i< array.length;i++){
-            res = res + array[i] + " ";
-        }
-        return res;
+        return res.substring(5);
     }
 }
