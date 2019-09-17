@@ -16,7 +16,11 @@ public class Bot {
         var i = 1;
         while (true){
             var command = in.nextLine();
-            System.out.println(dictionary.get(command.split(" ")[0]).apply(command));
+            try {
+                System.out.println(dictionary.get(command.split(" ")[0]).apply(command));
+            }catch (NullPointerException e){
+                System.out.println(dictionary.get("help").apply(command));
+            }
             if (i == 0) break;
         }
         in.close();
