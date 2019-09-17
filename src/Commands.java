@@ -3,7 +3,8 @@ public class Commands {
         return "Я могу:\n" +
                 "help - список возможностей\n" +
                 "Авторы - те, кто создал меня\n" +
-                "echo - повторю за тобой\n";
+                "echo - повторю за тобой\n" +
+                "quit - попрощаться";
     }
 
     public static String owners(String command){
