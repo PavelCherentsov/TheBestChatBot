@@ -23,7 +23,6 @@ public class Bot {
             if (command.equals("study"))
             {
                 Commands.study(in);
-                continue;
             }
             else{
                 try
