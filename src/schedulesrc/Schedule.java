@@ -14,7 +14,6 @@ public class Schedule {
 
     public ArrayList<ScheduleElement> makeFT201DaySchedule(String day)
     {
-        //обработать разные группы по ООП, четные и нечетные недели для пт
         var daySchedule = new ArrayList<ScheduleElement>();
         String [] subjects = new String[] {"Объектно-ориентированное программирование",
                 "Архитектура ЭВМ", "Иностранный язык", "Дискретная математика", "Языки сценариев",
