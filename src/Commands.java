@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import schedulesrc.Schedule;
 
 public class Commands {
     public static String help(String command){
@@ -25,8 +26,9 @@ public class Commands {
         return "Пока-пока :_(";
     }
 
-    public static String study(Scanner in)
+    public static String study(String command)
     {
+        Scanner in = new Scanner(System.in);
         System.out.println("Напиши 'пары' - получи расписание\n" +
                 "quit - выход в главное меню");
         var word = "";

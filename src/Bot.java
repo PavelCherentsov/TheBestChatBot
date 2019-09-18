@@ -12,6 +12,7 @@ public class Bot {
         dictionary.put("echo", Commands::echo);
         dictionary.put("quit", Commands::quit);
         dictionary.put("game", Commands::game);
+        dictionary.put("study", Commands::study);
         cmdStart(System.out::println);
     }
 
