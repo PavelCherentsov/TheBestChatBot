@@ -9,9 +9,8 @@ public class Commands {
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Напиши 'пары' - получи расписание\n" +
-                "quit - выход в главное меню");
+                "все - выход в главное меню");
         var word = "";
-        var isInSchedule = false;
         var weekDays = new String[] {"Пн", "Вт", "Ср", "Чт", "Пт"};
         while(true)
         {
@@ -19,17 +18,36 @@ public class Commands {
             if (word.equals("пары"))
             {
                 System.out.println("Введи день недели (в формате: Пн, Вт, Ср, Чт, Пт)");
-                var day = in.nextLine();
-                if (Arrays.asList(weekDays).contains(day))
+                while (true)
                 {
-                    System.out.println("Contains");
-                    getSchedule(day);
-                    System.out.println("Чтобы посмотреть расписание на другой день, напиши день недели в формате 'Пн'\n" +
-                            "quit - вернуться в меню study");
-                    var command = in.nextLine();
-                    System.out.println(command);
+                    var day = in.nextLine();
+                    if (Arrays.asList(weekDays).contains(day))
+                    {
+                        System.out.println("Contains");
+                        getSchedule(day);
+                        System.out.println("Посмотри другой день или пиши 'все', чтобы выйти");
+                    }
+                    else if (day.equals("все"))
+                    {
+                        System.out.println("Возврат в раздел учёбки (study)");
+                        break;
+                    }
+                    else if (day.equals("help"))
+                    {
+                        System.out.println("Чтобы посмотреть расписание на другой день, напиши день недели в формате 'Пн'\n" +
+                                "все - вернуться в меню study");
+                    }
+                    else if (day.equals("хелп"))
+                    {
+                        System.out.println("Заело Shift-Alt?) Ладно, держи помощь:");
+                        System.out.println("Чтобы посмотреть расписание на другой день, напиши день недели в формате 'Пн'\n" +
+                                "все - вернуться в меню study");
+                    }
+                    else {
+                        System.out.println("Некорректный ввод. Пиши 'help' для помощи");
+                    }
                 }
-                //System.out.println("Возврат в раздел учёбки (study)");
+                //
             }
             else if (word.equals("quit"))
             {
@@ -37,6 +55,12 @@ public class Commands {
             }
             else if (word.equals("help"))
             {
+                System.out.println("Напиши 'пары' - получи расписание\n" +
+                        "quit - выход в главное меню");
+            }
+            else if (word.equals("хелп"))
+            {
+                System.out.println("Белым по черному же написано - 'help'! Держи:");
                 System.out.println("Напиши 'пары' - получи расписание\n" +
                         "quit - выход в главное меню");
             }
