@@ -79,7 +79,6 @@ public class Commands {
         while (life != 0){
             System.out.println(levels.get(life));
             System.out.println(_word);
-            System.out.println(word);
             var c = in.nextLine().charAt(0);
             var yes = false;
             for (int i=0; i<word.length(); i++){
