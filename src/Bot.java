@@ -3,20 +3,24 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import Commands.*;
 
 public class Bot {
     private HashMap<String, Function<String, String>> dictionary = new HashMap<String,Function<String, String>>();
     public Bot(){
-        dictionary.put("help", Commands::help);
-        dictionary.put("Авторы", Commands::owners);
-        dictionary.put("echo", Commands::echo);
-        dictionary.put("quit", Commands::quit);
-        dictionary.put("game", Commands::game);
+        dictionary.put("help", Help::help);
+        dictionary.put("Авторы", Owners::owners);
+        dictionary.put("echo", Echo::echo);
+        dictionary.put("quit", Quit::quit);
+        dictionary.put("game", Hangman::game);
         dictionary.put("study", Commands::study);
-        cmdStart(System.out::println);
+        cmdStart();
     }
 
-    public void cmdStart(Consumer<String> print){
+    public static Consumer<String> print = System.out::println;
+
+    public void cmdStart(){
+        print.accept("Привет, я бот! Напиши 'help', и я расскажу, что умею :)");
         Scanner in = new Scanner(System.in);
         while (true){
             var command = in.nextLine();
