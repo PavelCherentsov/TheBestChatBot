@@ -11,6 +11,7 @@ public class Bot {
         dictionary.put("Авторы", Commands::owners);
         dictionary.put("echo", Commands::echo);
         dictionary.put("quit", Commands::quit);
+        dictionary.put("game", Commands::game);
         cmdStart(System.out::println);
     }
 
@@ -27,9 +28,5 @@ public class Bot {
                 break;
         }
         in.close();
-    }
-
-    public void findCommand(){
-
     }
 }
