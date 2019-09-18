@@ -26,7 +26,7 @@ public class Commands {
     public static String study(Scanner in)
     {
         System.out.println("Напиши 'пары' - получи расписание\n" +
-                "quit - выход");
+                "quit - выход в главное меню");
         var word = "";
         while(true)
         {
@@ -46,14 +46,14 @@ public class Commands {
             else if (word.equals("help"))
             {
                 System.out.println("Напиши 'пары' - получи расписание\n" +
-                        "quit - выход");
+                        "quit - выход в главное меню");
             }
             else
             {
                 System.out.println("Напиши 'help' - тебе помогут");
             }
         }
-        return "...Выход...";
+        return "...Выход в главное меню...";
     }
 
     public static void getSchedule(String day)
