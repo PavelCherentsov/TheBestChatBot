@@ -1,9 +1,11 @@
-import schedulesrc.Schedule;
+package Commands;
+
+import Commands.schedulesrc.Schedule;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Commands {
+public class Study {
 
     public static String study(String c)
     {

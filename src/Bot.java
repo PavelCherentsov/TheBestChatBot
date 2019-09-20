@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -13,7 +12,7 @@ public class Bot {
         dictionary.put("echo", Echo::echo);
         dictionary.put("quit", Quit::quit);
         dictionary.put("game", Hangman::game);
-        dictionary.put("study", Commands::study);
+        dictionary.put("study", Study::study);
         cmdStart();
     }
 

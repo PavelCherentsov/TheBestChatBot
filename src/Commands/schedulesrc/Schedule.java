@@ -1,4 +1,4 @@
-package schedulesrc;
+package Commands.schedulesrc;
 
 import java.util.ArrayList;
 
