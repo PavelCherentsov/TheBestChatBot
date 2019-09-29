@@ -12,8 +12,8 @@ public class Study {
         Scanner in = new Scanner(System.in);
         System.out.println("Напиши 'пары' - получи расписание\n" +
                 "все - выход в главное меню");
-        var word = "";
-        var weekDays = new String[] {"Пн", "Вт", "Ср", "Чт", "Пт"};
+        String word = "";
+        String[] weekDays = new String[] {"Пн", "Вт", "Ср", "Чт", "Пт"};
         while(true)
         {
             word = in.nextLine();
@@ -22,7 +22,7 @@ public class Study {
                 System.out.println("Введи день недели (в формате: Пн, Вт, Ср, Чт, Пт)");
                 while (true)
                 {
-                    var day = in.nextLine();
+                    String day = in.nextLine();
                     if (Arrays.asList(weekDays).contains(day))
                     {
                         System.out.println("Contains");
@@ -76,7 +76,7 @@ public class Study {
 
     public static void getSchedule(String day)
     {
-        var daySchedule = new Schedule(day);
+        Schedule daySchedule = new Schedule(day);
         daySchedule.printDaySchedule();
     }
 }

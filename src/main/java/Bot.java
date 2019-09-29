@@ -1,11 +1,13 @@
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import Commands.Hello;
+import Commands.*;
 
 public class Bot {
+    private Status statusActive = Status.MENU;
+
     private HashMap<String, Function<String, String>> dictionary = new HashMap<String,Function<String, String>>();
+
     public Bot(){
         dictionary.put("help", Help::help);
         dictionary.put("Авторы", Owners::owners);
@@ -16,20 +18,28 @@ public class Bot {
         cmdStart();
     }
 
-    public static Consumer<String> print = System.out::println;
-
     public void cmdStart(){
-        print.accept("Привет, я бот! Напиши 'help', и я расскажу, что умею :)");
+        System.out.println("Привет, я бот! Напиши 'help', и я расскажу, что умею :)");
         Scanner in = new Scanner(System.in);
+        String command;
+        String result = "";
         while (true){
-            var command = in.nextLine();
+            String line = in.nextLine();
             try {
-                print.accept(dictionary.get(command.split(" ")[0]).apply(command));
+                if (statusActive == Status.MENU){
+                    command = line.split(" ")[0];
+                    result = dictionary.get(command).apply(line);
+                }
+                else if (statusActive == Status.GAME){
+                    result = Hangman.game(line);
+                }
+
             }catch (NullPointerException e) {
-                print.accept(dictionary.get("help").apply(command));
+                result = dictionary.get("help").apply(line);
             }
-            if (command.split(" ")[0].equals("quit"))
+            if (line.split(" ")[0].equals("quit"))
                 break;
+            System.out.println(result);
         }
         in.close();
     }

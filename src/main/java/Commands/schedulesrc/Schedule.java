@@ -14,7 +14,7 @@ public class Schedule {
 
     public ArrayList<ScheduleElement> makeFT201DaySchedule(String day)
     {
-        var daySchedule = new ArrayList<ScheduleElement>();
+        ArrayList<ScheduleElement> daySchedule = new ArrayList<ScheduleElement>();
         String [] subjects = new String[] {"Объектно-ориентированное программирование",
                 "Архитектура ЭВМ", "Иностранный язык", "Дискретная математика", "Языки сценариев",
                 "Прикладная физическая культура", "Кратные интегралы и ряды", "Компьютерные сети",

@@ -20,18 +20,19 @@ public class Hangman {
         initWords();
         word = words.get(new Random().nextInt(words.size()-1));
         wordEncrypted = GenerateEncryptedWord(word);
-        Scanner in = new Scanner(System.in);
+        Scanner in = new Scanner(System.in, "Cp866");
         life = 6;
         while (life != 0){
             print.accept(levels.get(life));
             print.accept(wordEncrypted);
-            var c = in.nextLine().toLowerCase();
+            String c = in.nextLine().toLowerCase();
+            print.accept(c);
             if (c.equals("help")){
                 Help();
             }else if (c.equals("quit")){
                 break;
             } else {
-                var guessed = OpenLetters(c);
+                Boolean guessed = OpenLetters(c);
                 if (!guessed)
                     life--;
                 if (!wordEncrypted.contains("_"))
@@ -50,7 +51,7 @@ public class Hangman {
     }
 
     private static String GenerateEncryptedWord(String word){
-        var result = "_";
+        String result = "_";
         for (int i =0; i< word.length()-1; i++){
             result += " _";
         }
@@ -58,7 +59,7 @@ public class Hangman {
     }
 
     private static boolean OpenLetters(String c){
-        var result = false;
+        boolean result = false;
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) == c.charAt(0)) {
                 wordEncrypted = wordEncrypted.substring(0, 2 * i) + c.charAt(0) + wordEncrypted.substring(2 * i + 1);
