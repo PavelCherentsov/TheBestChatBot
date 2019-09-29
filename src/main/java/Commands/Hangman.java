@@ -7,58 +7,48 @@ import java.util.function.Consumer;
 
 
 public class Hangman {
-    private static Consumer<String> print = System.out::println;
-
     private static int life;
     private static String word;
     private static String wordEncrypted;
     private static ArrayList<String> words = new ArrayList<String>();
 
     public static String game(String command) {
-        Welcome();
-        initLevels();
-        initWords();
-        word = words.get(new Random().nextInt(words.size()-1));
-        wordEncrypted = GenerateEncryptedWord(word);
-        Scanner in = new Scanner(System.in, "Cp866");
-        life = 6;
-        while (life != 0){
-            print.accept(levels.get(life));
-            print.accept(wordEncrypted);
-            String c = in.nextLine().toLowerCase();
-            print.accept(c);
-            if (c.equals("help")){
-                Help();
-            }else if (c.equals("quit")){
-                break;
-            } else {
-                Boolean guessed = OpenLetters(c);
-                if (!guessed)
-                    life--;
-                if (!wordEncrypted.contains("_"))
-                    break;
+        if (command.equals("game")) {
+            initLevels();
+            initWords();
+            word = words.get(new Random().nextInt(words.size() - 1));
+            wordEncrypted = GenerateEncryptedWord(word);
+            life = 6;
+            return Welcome() + "\n" + levels.get(life) + "\n" + wordEncrypted;
+        } else if (command.equals("help")) {
+            return Help() + "\n" + levels.get(life) + "\n" + wordEncrypted;
+        } else if (command.equals("quit")) {
+            return levels.get(life) + "\n" + "Правильный ответ: " + word + "\n" + "Ты проиграл(";
+
+        } else {
+            String c = command.toLowerCase();
+            Boolean guessed = OpenLetters(c);
+            if (!guessed)
+                life--;
+            if (!wordEncrypted.contains("_"))
+                return "Поздравляю! Ты выиграл! :)";
+            if (life == 0) {
+                return "Ты проиграл(";
             }
-
+            return levels.get(life) + "\n" + wordEncrypted;
         }
-        if (wordEncrypted.contains("_")){
-            print.accept(levels.get(life));
-            print.accept("Правильный ответ: " + word);
-            return "Ты проиграл(";
-        }
-
-        return "Поздравляю! Ты выиграл! :)";
-
     }
 
-    private static String GenerateEncryptedWord(String word){
+
+    private static String GenerateEncryptedWord(String word) {
         String result = "_";
-        for (int i =0; i< word.length()-1; i++){
+        for (int i = 0; i < word.length() - 1; i++) {
             result += " _";
         }
         return result;
     }
 
-    private static boolean OpenLetters(String c){
+    private static boolean OpenLetters(String c) {
         boolean result = false;
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) == c.charAt(0)) {
@@ -69,7 +59,7 @@ public class Hangman {
         return result;
     }
 
-    private static void initWords(){
+    private static void initWords() {
         words.add("коллаборация");
         words.add("когнитивный");
         words.add("трансцендентный");
@@ -80,7 +70,7 @@ public class Hangman {
 
     private static ArrayList<String> levels = new ArrayList<String>();
 
-    private static void initLevels(){
+    private static void initLevels() {
         levels.add(0, "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
@@ -133,17 +123,17 @@ public class Hangman {
 
     }
 
-    private static void Welcome(){
-        print.accept("Приветствую тебя в сногсшибательной, в прямом смысле этого слова, игре 'Виселица'.\n" +
+    private static String Welcome() {
+        return "Приветствую тебя в сногсшибательной, в прямом смысле этого слова, игре 'Виселица'.\n" +
                 "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
                 "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
-                "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'. Удачи!");
+                "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'. Удачи!";
     }
 
-    private static void Help(){
-        print.accept("Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
+    private static String Help() {
+        return "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
                 "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
                 "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'." +
-                " Для выхода из игры: введи 'quit'");
+                " Для выхода из игры: введи 'quit'";
     }
 }

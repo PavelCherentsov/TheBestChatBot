@@ -1,14 +1,15 @@
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Function;
+
 import Commands.*;
 
 public class Bot {
-    private Status statusActive = Status.MENU;
+    private Status statusActive;
 
-    private HashMap<String, Function<String, String>> dictionary = new HashMap<String,Function<String, String>>();
+    private HashMap<String, Function<String, String>> dictionary = new HashMap<String, Function<String, String>>();
 
-    public Bot(){
+    public Bot() {
         dictionary.put("help", Help::help);
         dictionary.put("Авторы", Owners::owners);
         dictionary.put("echo", Echo::echo);
@@ -18,27 +19,34 @@ public class Bot {
         cmdStart();
     }
 
-    public void cmdStart(){
-        System.out.println("Привет, я бот! Напиши 'help', и я расскажу, что умею :)");
-        Scanner in = new Scanner(System.in);
+    public void cmdStart() {
+        Scanner in = new Scanner(System.in, "Cp866");
         String command;
         String result = "";
-        while (true){
+        while (true) {
             String line = in.nextLine();
             try {
-                if (statusActive == Status.MENU){
+                if (statusActive == null) {
+                    result = "Привет, я бот! Напиши 'help', и я расскажу, что умею :)";
+                    statusActive = Status.MENU;
+                } else if (statusActive == Status.MENU) {
                     command = line.split(" ")[0];
                     result = dictionary.get(command).apply(line);
-                }
-                else if (statusActive == Status.GAME){
+                    if (command.equals("game")) {
+                        statusActive = Status.GAME;
+                    }
+                    if (command.equals("quit"))
+                        break;
+                } else if (statusActive == Status.GAME) {
                     result = Hangman.game(line);
+                    if (line.equals("quit") || result.equals("Поздравляю! Ты выиграл! :)")
+                            || result.equals("Ты проиграл(")) {
+                        statusActive = Status.MENU;
+                    }
                 }
-
-            }catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 result = dictionary.get("help").apply(line);
             }
-            if (line.split(" ")[0].equals("quit"))
-                break;
             System.out.println(result);
         }
         in.close();
