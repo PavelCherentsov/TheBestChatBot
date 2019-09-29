@@ -10,7 +10,7 @@ public class Bot {
     private HashMap<String, Function<String, String>> dictionary = new HashMap<String, Function<String, String>>();
 
     public Bot() {
-        dictionary.put("help", Help::help);
+        dictionary.put("/help", Help::help);
         dictionary.put("Авторы", Owners::owners);
         dictionary.put("echo", Echo::echo);
         dictionary.put("quit", Quit::quit);
@@ -26,8 +26,8 @@ public class Bot {
         while (true) {
             String line = in.nextLine();
             try {
-                if (statusActive == null) {
-                    result = "Привет, я бот! Напиши 'help', и я расскажу, что умею :)";
+                if (line.equals("/start")) {
+                    result = "Привет, я бот! Напиши '/help', и я расскажу, что умею :)";
                     statusActive = Status.MENU;
                 } else if (statusActive == Status.MENU) {
                     command = line.split(" ")[0];
@@ -43,9 +43,11 @@ public class Bot {
                             || result.equals("Ты проиграл(")) {
                         statusActive = Status.MENU;
                     }
+                } else {
+                    result = "Для запуска напишите '/start'";
                 }
             } catch (NullPointerException e) {
-                result = dictionary.get("help").apply(line);
+                result = dictionary.get("/help").apply(line);
             }
             System.out.println(result);
         }
