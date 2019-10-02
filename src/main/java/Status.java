@@ -1,4 +1,5 @@
 public enum Status {
     MENU,
-    GAME;
+    GAME,
+    STUDY;
 }

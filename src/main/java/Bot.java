@@ -62,10 +62,19 @@ public class Bot extends TelegramLongPollingBot {
                         result = "Пока";
                         statusActive = null;
                     }
+                    if (command.equals("study")){
+                        statusActive = Status.STUDY;
+                    }
                 } else if (statusActive == Status.GAME) {
                     result = Hangman.game(update.getMessage().getText());
                     if (update.getMessage().getText().equals("quit") || result.equals("Поздравляю! Ты выиграл! :)")
                             || result.equals("Ты проиграл(")) {
+                        statusActive = Status.MENU;
+                    }
+                }
+                else if (statusActive == Status.STUDY){
+                    result = Study.study(update.getMessage().getText());
+                    if (update.getMessage().getText().equals("quit")){
                         statusActive = Status.MENU;
                     }
                 } else {

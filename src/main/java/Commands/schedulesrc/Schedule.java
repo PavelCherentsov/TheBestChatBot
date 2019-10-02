@@ -56,12 +56,15 @@ public class Schedule {
         return daySchedule;
     }
 
-    public void printDaySchedule()
+    public String getDaySchedule()
     {
-        System.out.println(weekDay + ":");
+        String res = "";
+        res += (weekDay + ":\n");
         for (ScheduleElement subject : subjects) {
-            System.out.println(subject.number.toString() + " " + subject.time + " " +
-                    subject.subject + " " + subject.cabinet);
+            res += (subject.number.toString() + " " + subject.time + " " +
+                    subject.subject + " " + subject.cabinet + "\n");
         }
+
+        return res;
     }
 }
