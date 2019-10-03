@@ -1,4 +1,4 @@
-package Commands;
+package commands;
 
 public class Quit {
     public static String quit(String command){

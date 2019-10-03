@@ -1,4 +1,4 @@
-package Commands;
+package commands;
 
 public class Owners {
     public static String owners(String command){

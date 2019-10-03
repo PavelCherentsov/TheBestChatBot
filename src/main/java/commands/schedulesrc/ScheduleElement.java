@@ -1,4 +1,4 @@
-package Commands.schedulesrc;
+package commands.schedulesrc;
 
 public class ScheduleElement {
     public Integer number;

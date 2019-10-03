@@ -1,4 +1,4 @@
-package Commands;
+package commands;
 
 public class Echo {
     public static String echo(String command){

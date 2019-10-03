@@ -2,7 +2,13 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Function;
 
-import Commands.*;
+import commands.Help;
+import commands.Owners;
+import commands.Echo;
+import commands.Quit;
+import commands.Hangman;
+import commands.Study;
+
 
 public class Bot {
     private Status statusActive;
@@ -11,7 +17,7 @@ public class Bot {
 
     public Bot() {
         dictionary.put("/help", Help::help);
-        dictionary.put("Авторы", Owners::owners);
+        dictionary.put("авторы", Owners::owners);
         dictionary.put("echo", Echo::echo);
         dictionary.put("quit", Quit::quit);
         dictionary.put("game", Hangman::game);
@@ -30,17 +36,28 @@ public class Bot {
                     result = "Привет, я бот! Напиши '/help', и я расскажу, что умею :)";
                     statusActive = Status.MENU;
                 } else if (statusActive == Status.MENU) {
-                    command = line.split(" ")[0];
+                    command = line.split(" ")[0].toLowerCase();
                     result = dictionary.get(command).apply(line);
                     if (command.equals("game")) {
                         statusActive = Status.GAME;
                     }
-                    if (command.equals("quit"))
-                        break;
+                    if (command.equals("quit")) {
+                        result = "Пока";
+                        statusActive = null;
+                    }
+                    if (command.equals("study")){
+                        statusActive = Status.STUDY;
+                    }
                 } else if (statusActive == Status.GAME) {
                     result = Hangman.game(line);
                     if (line.equals("quit") || result.equals("Поздравляю! Ты выиграл! :)")
                             || result.equals("Ты проиграл(")) {
+                        statusActive = Status.MENU;
+                    }
+                }
+                else if (statusActive == Status.STUDY){
+                    result = Study.study(line);
+                    if (line.equals("quit")){
                         statusActive = Status.MENU;
                     }
                 } else {
@@ -51,6 +68,6 @@ public class Bot {
             }
             System.out.println(result);
         }
-        in.close();
+
     }
 }
