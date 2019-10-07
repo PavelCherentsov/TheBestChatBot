@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.function.Function;
 
+import bot.Status;
+import bot.Bot;
 
 public class Hangman {
     private static int life;
@@ -13,30 +15,17 @@ public class Hangman {
     private static ArrayList<String> words = new ArrayList<String>();
     private static HashMap<String, Function<String, String>> dictionary = new HashMap<String, Function<String, String>>();
 
-    public static String game(String command) {
-        String result;
-        if (command.equals("game")) {
-            result = startGame();
-        } else if (command.equals("help") || command.contains("помощь")) {
-            result = help();
-        } else if (command.equals("quit") || command.contains("все") || command.contains("всё") || command.contains("пока")) {
-            return levels.get(life) + "\n" + "Правильный ответ: " + word + "\n" + "Ты проиграл(";
-        } else {
-            String c = command.toLowerCase();
-            Boolean guessed = openLetters(c);
-            if (!guessed)
-                life--;
-            if (!wordEncrypted.contains("_"))
-                return "Поздравляю! Ты выиграл! :)";
-            if (life == 0) {
-                return "Ты проиграл(";
-            }
-            return levels.get(life) + "\n" + wordEncrypted;
-        }
-        return result;
+    private static void initWords() {
+        words.add("коллаборация");
+        words.add("когнитивный");
+        words.add("трансцендентный");
+        words.add("априори");
+        words.add("конгруэнтность");
+
     }
 
-    private static String startGame() {
+    public static String startGame(Bot bot, String command) {
+        bot.statusActive = Status.GAME;
         initLevels();
         initWords();
         word = words.get(new Random().nextInt(words.size() - 1));
@@ -45,6 +34,36 @@ public class Hangman {
         return welcome() + "\n" + levels.get(life) + "\n" + wordEncrypted;
     }
 
+    public static String game(Bot bot, String command) {
+        String c = command.toLowerCase();
+        openLetters(c);
+        if (!wordEncrypted.contains("_"))
+            return "Поздравляю! Ты выиграл! :)";
+        if (life == 0) {
+            return "Ты проиграл(";
+        }
+        return levels.get(life) + "\n" + wordEncrypted;
+    }
+
+    public static String help(Bot bot, String command) {
+        return "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
+                "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
+                "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'." +
+                " Для выхода из игры: введи 'quit'" +
+                "\n" + levels.get(life) + "\n" + wordEncrypted;
+    }
+
+    public static String quit(Bot bot, String command) {
+        bot.statusActive = Status.MENU;
+        return levels.get(life) + "\n" + "Правильный ответ: " + word + "\n" + "Ты проиграл(";
+    }
+
+    private static String welcome() {
+        return "Приветствую тебя в сногсшибательной, в прямом смысле этого слова, игре 'Виселица'.\n" +
+                "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
+                "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
+                "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'. Удачи!";
+    }
 
     private static String generateEncryptedWord(String word) {
         String result = "_";
@@ -54,7 +73,7 @@ public class Hangman {
         return result;
     }
 
-    private static boolean openLetters(String c) {
+    private static void openLetters(String c) {
         boolean result = false;
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) == c.charAt(0)) {
@@ -62,16 +81,8 @@ public class Hangman {
                 result = true;
             }
         }
-        return result;
-    }
-
-    private static void initWords() {
-        words.add("коллаборация");
-        words.add("когнитивный");
-        words.add("трансцендентный");
-        words.add("априори");
-        words.add("конгруэнтность");
-
+        if (!result)
+            life--;
     }
 
     private static ArrayList<String> levels = new ArrayList<String>();
@@ -126,21 +137,5 @@ public class Hangman {
                 "        |  \n" +
                 "        |  \n" +
                 "      -----");
-
-    }
-
-    private static String welcome() {
-        return "Приветствую тебя в сногсшибательной, в прямом смысле этого слова, игре 'Виселица'.\n" +
-                "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
-                "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
-                "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'. Удачи!";
-    }
-
-    private static String help() {
-        return "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
-                "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
-                "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'." +
-                " Для выхода из игры: введи 'quit'" +
-                "\n" + levels.get(life) + "\n" + wordEncrypted;
     }
 }

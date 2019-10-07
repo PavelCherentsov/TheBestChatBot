@@ -1,7 +1,9 @@
 package commands;
 
+import bot.Bot;
+
 public class Help{
-    public static String help(String command){
+    public static String help(Bot bot, String command){
         return "Я могу:\n" +
                 "/help - список возможностей\n" +
                 "Авторы - те, кто создал меня\n" +
