@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.BiFunction;
 
-import commands.Help;
-import commands.Owners;
-import commands.Echo;
-import commands.Quit;
-import commands.Hangman;
+import commands.*;
 
 
 public class Bot {
@@ -29,6 +25,7 @@ public class Bot {
         dictionaryMenu.put("quit", Quit::quit);
         dictionaryMenu.put("game", Hangman::startGame);
         dictionaryMenu.put("default", Help::help);
+        dictionaryMenu.put("study", Study::mainMenu);
 
         dict.put(Status.MENU, dictionaryMenu);
 
@@ -39,7 +36,20 @@ public class Bot {
 
         dict.put(Status.GAME, dictionaryGame);
 
+        HashMap<String, BiFunction<Bot, String, String>> dictStudy = new HashMap<>();
+        dictStudy.put("classes", Study::startClasses);
+        dictStudy.put("help", Study::studyHelp);
+        dictStudy.put("default", Study::def);
+        dictStudy.put("quit", Study::quitToMenu);
 
+        dict.put(Status.STUDY, dictStudy);
+
+        HashMap<String, BiFunction<Bot, String, String>> dictClasses = new HashMap<>();
+        dictClasses.put("default", Study::getClasses);
+        dictClasses.put("quit", Study::mainMenu);
+        dictClasses.put("help", Study::classesHelp);
+
+        dict.put(Status.CLASSES, dictClasses);
     }
 
     public void run() {

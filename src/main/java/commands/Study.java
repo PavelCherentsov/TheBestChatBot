@@ -5,51 +5,70 @@ import commands.schedulesrc.Schedule;
 import java.util.ArrayList;
 import java.util.List;
 
+import bot.Bot;
+import bot.Status;
+
 
 public class Study {
 
     private static boolean classes = false;
     private static List<String> weekDays = new ArrayList<String>() {{
-        add("пн");
-        add("вт");
-        add("ср");
-        add("чт");
-        add("пт");
+        add("m");
+        add("t");
+        add("w");
+        add("th");
+        add("f");
 
     }};
-
-
-    public static String study(String command) {
-        command = command.toLowerCase();
-        String word = "";
-        if (command.equals("study") && !classes) {
-            return "Напиши 'пары' - получи расписание\nquit - выход в меню";
-        } else if (command.equals("пары") && !classes) {
-            classes = true;
-            return "Введи день недели (в формате: Пн, Вт, Ср, Чт, Пт)";
-        } else if (weekDays.contains(command) && classes) {
-            word = getSchedule(command);
-            return word + "Посмотри другой день или пиши 'все', чтобы выйти";
-        } else if (classes && command.equals("все")) {
-            classes = false;
-            return "Напиши 'пары' - получи расписание\nquit - выход в меню";
-        } else if (classes && command.equals("help")) {
-            return "Чтобы посмотреть расписание на другой день, напиши день недели в формате 'Пн'\n" +
-                    "все - вернуться в меню study";
-        } else if (command.equals("help")) {
-            return "Напиши 'пары' - получи расписание\nquit - выход в меню";
-        } else if (command.equals("quit") && !classes) {
-            return "Выход в главное меню";
-        } else {
-            return "Напиши help - тебе помогут!";
-        }
-
-    }
 
     public static String getSchedule(String day)
     {
         Schedule daySchedule = new Schedule(day);
-        String result = daySchedule.getDaySchedule();
-        return result;
+        return daySchedule.getDaySchedule();
+    }
+
+    public static String mainMenu(Bot bot, String command)
+    {
+        bot.statusActive = Status.STUDY;
+        return "Напиши 'classes' - получи расписание\nquit - выход в меню";
+    }
+
+    public static String startClasses (Bot bot, String command)
+    {
+        bot.statusActive = Status.CLASSES;
+        return "Введи день недели (в формате: M, T, W, TH, F)";
+    }
+
+    public static String getClasses (Bot bot, String command)
+    {
+        if (weekDays.contains(command))
+        {
+            String word = getSchedule(command);
+            return word + "Посмотри другой день или пиши 'quit', чтобы выйти";
+        }
+        else
+            return def(bot, command);
+    }
+
+    public static String studyHelp (Bot bot, String command)
+    {
+        return "Напиши 'classes' - получи расписание\nquit - выход в меню";
+    }
+
+    public static String classesHelp (Bot bot, String command)
+    {
+        return "Чтобы посмотреть расписание на другой день, напиши день недели в формате 'Пн'\n" +
+                "все - вернуться в меню study";
+    }
+
+    public static String quitToMenu (Bot bot, String command)
+    {
+        bot.statusActive = Status.MENU;
+        return "Выход в главное меню";
+    }
+
+    public static String def (Bot bot, String command)
+    {
+        return "Напиши help";
     }
 }
