@@ -21,6 +21,16 @@ public class Hangman {
         words.add("трансцендентный");
         words.add("априори");
         words.add("конгруэнтность");
+        words.add("уравновеситься");
+        words.add("трензельный");
+        words.add("ихневмон");
+        words.add("автотележка");
+        words.add("выпахивание");
+        words.add("серпоклюв");
+        words.add("орясина");
+        words.add("возгреметь");
+        words.add("солестойкость");
+        words.add("слабоуздый");
 
     }
 
@@ -35,14 +45,20 @@ public class Hangman {
     }
 
     public static String game(Bot bot, String command) {
+        if (command.equals(""))
+            return help(bot, "");
         String c = command.toLowerCase();
         openLetters(c);
-        if (!wordEncrypted.contains("_"))
+        if (!wordEncrypted.contains("_")) {
+            bot.statusActive = Status.MENU;
             return "Поздравляю! Ты выиграл! :)";
+        }
         if (life == 0) {
+            bot.statusActive = Status.MENU;
             return "Ты проиграл(";
         }
         return levels.get(life) + "\n" + wordEncrypted;
+
     }
 
     public static String help(Bot bot, String command) {

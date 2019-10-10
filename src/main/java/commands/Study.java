@@ -11,7 +11,6 @@ import bot.Status;
 
 public class Study {
 
-    private static boolean classes = false;
     private static List<String> weekDays = new ArrayList<String>() {{
         add("m");
         add("t");
@@ -21,54 +20,44 @@ public class Study {
 
     }};
 
-    public static String getSchedule(String day)
-    {
+    public static String getSchedule(String day) {
         Schedule daySchedule = new Schedule(day);
         return daySchedule.getDaySchedule();
     }
 
-    public static String mainMenu(Bot bot, String command)
-    {
+    public static String mainMenu(Bot bot, String command) {
         bot.statusActive = Status.STUDY;
         return "Напиши 'classes' - получи расписание\nquit - выход в меню";
     }
 
-    public static String startClasses (Bot bot, String command)
-    {
+    public static String startClasses(Bot bot, String command) {
         bot.statusActive = Status.CLASSES;
-        return "Введи день недели (в формате: M, T, W, TH, F)";
+        return "Введи день недели (в формате: m, t, w, th, f)";
     }
 
-    public static String getClasses (Bot bot, String command)
-    {
-        if (weekDays.contains(command))
-        {
+    public static String getClasses(Bot bot, String command) {
+        if (weekDays.contains(command)) {
             String word = getSchedule(command);
             return word + "Посмотри другой день или пиши 'quit', чтобы выйти";
-        }
-        else
+        } else
             return def(bot, command);
     }
 
-    public static String studyHelp (Bot bot, String command)
-    {
+    public static String studyHelp(Bot bot, String command) {
         return "Напиши 'classes' - получи расписание\nquit - выход в меню";
     }
 
-    public static String classesHelp (Bot bot, String command)
-    {
-        return "Чтобы посмотреть расписание на другой день, напиши день недели в формате 'Пн'\n" +
+    public static String classesHelp(Bot bot, String command) {
+        return "Чтобы посмотреть расписание на другой день, напиши день недели в формате 'm'\n" +
                 "все - вернуться в меню study";
     }
 
-    public static String quitToMenu (Bot bot, String command)
-    {
+    public static String quitToMenu(Bot bot, String command) {
         bot.statusActive = Status.MENU;
         return "Выход в главное меню";
     }
 
-    public static String def (Bot bot, String command)
-    {
+    public static String def(Bot bot, String command) {
         return "Напиши help";
     }
 }
