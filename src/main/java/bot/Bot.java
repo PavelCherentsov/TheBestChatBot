@@ -8,31 +8,39 @@ import commands.*;
 
 
 public class Bot {
-    public Status statusActive = Status.MENU;
+    public Status statusActive = Status.START;
+    public Hangman game = new Hangman();
 
     public Bot() {
-        run();
+        initDict();
     }
 
     private HashMap<Status, HashMap<String, BiFunction<Bot, String, String>>> dict = new HashMap<>();
 
     public void initDict() {
+        HashMap<String, BiFunction<Bot, String, String>> dictionaryStart = new HashMap<>();
+
+        dictionaryStart.put("help", Start::help);
+        dictionaryStart.put("default", Start::start);
+
+        dict.put(Status.START, dictionaryStart);
+
         HashMap<String, BiFunction<Bot, String, String>> dictionaryMenu = new HashMap<>();
 
         dictionaryMenu.put("help", Help::help);
         dictionaryMenu.put("авторы", Owners::owners);
         dictionaryMenu.put("echo", Echo::echo);
         dictionaryMenu.put("quit", Quit::quit);
-        dictionaryMenu.put("game", Hangman::startGame);
+        dictionaryMenu.put("game", game::startGame);
         dictionaryMenu.put("default", Help::help);
         dictionaryMenu.put("study", Study::mainMenu);
 
         dict.put(Status.MENU, dictionaryMenu);
 
         HashMap<String, BiFunction<Bot, String, String>> dictionaryGame = new HashMap<>();
-        dictionaryGame.put("help", Hangman::help);
-        dictionaryGame.put("quit", Hangman::quit);
-        dictionaryGame.put("default", Hangman::game);
+        dictionaryGame.put("help", game::help);
+        dictionaryGame.put("quit", game::quit);
+        dictionaryGame.put("default", game::game);
 
         dict.put(Status.GAME, dictionaryGame);
 
@@ -52,16 +60,17 @@ public class Bot {
         dict.put(Status.CLASSES, dictClasses);
     }
 
+    public String getAnswer(String line){
+        String command = line.split(" ")[0].toLowerCase();
+        return dict.get(statusActive)
+                .getOrDefault(command, dict.get(statusActive).get("default"))
+                .apply(this, line);
+    }
+
     public void run() {
-        System.out.println("Привет, я бот! Напиши '/help', и я расскажу, что умею :)");
-        initDict();
         Scanner in = new Scanner(System.in, "Cp866");
         while (true) {
-            String input = in.nextLine();
-            String command = input.split(" ")[0].toLowerCase();
-            String result = dict.get(statusActive)
-                            .getOrDefault(command, dict.get(statusActive).get("default"))
-                            .apply(this, input);
+            String result = getAnswer(in.nextLine());
             System.out.println(result);
         }
     }

@@ -14,6 +14,15 @@
 
     </properties>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>LATEST</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

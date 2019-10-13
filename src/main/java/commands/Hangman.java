@@ -2,6 +2,7 @@ package commands;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -9,13 +10,14 @@ import bot.Status;
 import bot.Bot;
 
 public class Hangman {
-    private static int life;
-    private static String word;
-    private static String wordEncrypted;
-    private static ArrayList<String> words = new ArrayList<String>();
-    private static HashMap<String, Function<String, String>> dictionary = new HashMap<String, Function<String, String>>();
+    private int life;
+    private String word;
+    private String wordEncrypted;
+    private ArrayList<String> words = new ArrayList<String>();
+    private HashMap<String, Function<String, String>> dictionary = new HashMap<String, Function<String, String>>();
+    private ArrayList<Character> usateLettere = new ArrayList<>();
 
-    private static void initWords() {
+    private void initWords() {
         words.add("коллаборация");
         words.add("когнитивный");
         words.add("трансцендентный");
@@ -34,7 +36,7 @@ public class Hangman {
 
     }
 
-    public static String startGame(Bot bot, String command) {
+    public String startGame(Bot bot, String command) {
         bot.statusActive = Status.GAME;
         initLevels();
         initWords();
@@ -44,10 +46,15 @@ public class Hangman {
         return welcome() + "\n" + levels.get(life) + "\n" + wordEncrypted;
     }
 
-    public static String game(Bot bot, String command) {
+    public String game(Bot bot, String command) {
         if (command.equals(""))
             return help(bot, "");
         String c = command.toLowerCase();
+        for (Character e : usateLettere) {
+            if (e.equals(c.charAt(0)))
+                return "Ты уже называл эту букву";
+        }
+        usateLettere.add(c.charAt(0));
         openLetters(c);
         if (!wordEncrypted.contains("_")) {
             bot.statusActive = Status.MENU;
@@ -55,13 +62,13 @@ public class Hangman {
         }
         if (life == 0) {
             bot.statusActive = Status.MENU;
-            return "Ты проиграл(";
+            return levels.get(life) + "\nТы проиграл(\nЯ загадал: " + word;
         }
         return levels.get(life) + "\n" + wordEncrypted;
 
     }
 
-    public static String help(Bot bot, String command) {
+    public String help(Bot bot, String command) {
         return "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
                 "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
                 "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'." +
@@ -69,19 +76,19 @@ public class Hangman {
                 "\n" + levels.get(life) + "\n" + wordEncrypted;
     }
 
-    public static String quit(Bot bot, String command) {
+    public String quit(Bot bot, String command) {
         bot.statusActive = Status.MENU;
         return levels.get(life) + "\n" + "Правильный ответ: " + word + "\n" + "Ты проиграл(";
     }
 
-    private static String welcome() {
+    private String welcome() {
         return "Приветствую тебя в сногсшибательной, в прямом смысле этого слова, игре 'Виселица'.\n" +
                 "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
                 "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
                 "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'. Удачи!";
     }
 
-    private static String generateEncryptedWord(String word) {
+    private String generateEncryptedWord(String word) {
         String result = "_";
         for (int i = 0; i < word.length() - 1; i++) {
             result += " _";
@@ -89,7 +96,7 @@ public class Hangman {
         return result;
     }
 
-    private static void openLetters(String c) {
+    private void openLetters(String c) {
         boolean result = false;
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) == c.charAt(0)) {
@@ -101,15 +108,15 @@ public class Hangman {
             life--;
     }
 
-    private static ArrayList<String> levels = new ArrayList<String>();
+    private ArrayList<String> levels = new ArrayList<String>();
 
-    private static void initLevels() {
+    private void initLevels() {
         levels.add(0, "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
                 " \\|/    |  \n" +
                 "  |     |  \n" +
-                " /\\     |  \n" +
+                " / \\    |  \n" +
                 "      -----");
         levels.add(1, "  _______  \n" +
                 "  |    \\|  \n" +
