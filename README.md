@@ -9,7 +9,7 @@
 - [x] Настроить на mvn
 - [x] Архитектура
 ## Задачи на 2 неделю
-- [ ] Telegram
+- [x] Telegram
 * [java/util/concurrent](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/package-summary.html)
 - [ ] Органайзер
 ## Задачи на 3 неделю
