@@ -1,5 +1,5 @@
 ﻿# TheBestChatBot
-    Версия: 0.0.3
+    Версия: 0.2.1
 ## Задачи на 1 неделю
 - [x] help
 - [x] Авторы
@@ -9,7 +9,7 @@
 - [x] Настроить на mvn
 - [x] Архитектура
 ## Задачи на 2 неделю
-- [ ] Telegram
+- [x] Telegram
 * [java/util/concurrent](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/package-summary.html)
 - [ ] Органайзер
 ## Задачи на 3 неделю
