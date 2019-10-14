@@ -1,10 +1,8 @@
 package commands;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import bot.Status;
 import bot.Bot;
@@ -14,7 +12,6 @@ public class Hangman {
     private String word;
     private String wordEncrypted;
     private ArrayList<String> words = new ArrayList<String>();
-    private HashMap<String, Function<String, String>> dictionary = new HashMap<String, Function<String, String>>();
     private ArrayList<Character> usateLettere = new ArrayList<>();
 
     private void initWords() {
@@ -33,27 +30,28 @@ public class Hangman {
         words.add("возгреметь");
         words.add("солестойкость");
         words.add("слабоуздый");
-
     }
 
     public String startGame(Bot bot, String command) {
         bot.statusActive = Status.GAME;
         initLevels();
+        words.clear();
         initWords();
         word = words.get(new Random().nextInt(words.size() - 1));
         wordEncrypted = generateEncryptedWord(word);
         life = 6;
+        usateLettere.clear();
         return welcome() + "\n" + levels.get(life) + "\n" + wordEncrypted;
     }
 
     public String game(Bot bot, String command) {
-        if (command.equals(""))
-            return help(bot, "");
+        if (Pattern.matches(" +", command))
+            return help(bot, command);
+        if (!checkIsLetter(command))
+            return "Введите одну букву русского алфавита";
         String c = command.toLowerCase();
-        for (Character e : usateLettere) {
-            if (e.equals(c.charAt(0)))
-                return "Ты уже называл эту букву";
-        }
+        if (checkLetterWas(command))
+            return "Ты уже называл эту букву";
         usateLettere.add(c.charAt(0));
         openLetters(c);
         if (!wordEncrypted.contains("_")) {
@@ -86,6 +84,21 @@ public class Hangman {
                 "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
                 "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
                 "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'. Удачи!";
+    }
+
+    private Boolean checkIsLetter(String command){
+        if (command.length() != 1)
+            return false;
+        return Pattern.matches("[а-яА-Я]?", command);
+    }
+
+    private Boolean checkLetterWas(String command) {
+        String c = command.toLowerCase();
+        for (Character e : usateLettere) {
+            if (e.equals(c.charAt(0)))
+                return true;
+        }
+        return false;
     }
 
     private String generateEncryptedWord(String word) {

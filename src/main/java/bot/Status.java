@@ -5,5 +5,6 @@ public enum Status {
     MENU,
     GAME,
     STUDY,
-    CLASSES;
+    CLASSES,
+    ORGANIZER;
 }

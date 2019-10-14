@@ -1,9 +1,11 @@
 package commands;
 
 import bot.Bot;
+import bot.Status;
 
 public class Quit {
     public static String quit(Bot bot, String command){
-        return "Пока-пока :_(";
+        bot.statusActive = Status.START;
+        return "Пока-пока. Заглядывай ещё :3";
     }
 }

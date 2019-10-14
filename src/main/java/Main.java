@@ -15,7 +15,7 @@ public class Main extends TelegramLongPollingBot {
     private static final String BOT_NAME = "WhoPi";
     private static final String BOT_TOKEN = "745894584:AAHUqxWITerwmrexJME1_7PA3Hm1e7KQ5Fc";
 
-    public Main(){
+    public Main() {
 
     }
 
@@ -47,7 +47,7 @@ public class Main extends TelegramLongPollingBot {
         SendMessage sendMessage = new SendMessage().setChatId(update.getMessage().getChatId());
         String result = "";
         try {
-            if (!(users.containsKey(chatId))){
+            if (!(users.containsKey(chatId))) {
                 users.put(chatId, new Bot());
             }
             result = users.get(chatId).getAnswer(message);
