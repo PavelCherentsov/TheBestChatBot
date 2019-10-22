@@ -1,6 +1,8 @@
 package bot;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.BiFunction;
@@ -16,6 +18,7 @@ import commands.Quit;
 import commands.Start;
 import commands.Study;
 import commands.organizer.Organizer;
+import java.io.FileWriter;
 
 
 public class Bot implements Serializable {
@@ -124,9 +127,20 @@ public class Bot implements Serializable {
     }
 
     public void run() {
-        Scanner in = new Scanner(System.in, "Cp866");
+        Scanner in = new Scanner(System.in, "Cp1251");
         while (true) {
             String line = in.nextLine();
+            try (FileWriter writer = new FileWriter("test.txt", true))
+            {
+                System.out.println(line);
+                writer.write(line + '\n');
+                writer.flush();
+            }
+            catch (IOException ex)
+            {
+                System.out.println(ex.getMessage());
+                ex.printStackTrace();
+            }
             String result = getAnswer(line);
             if (result.contains("<pre>" )){
                 result = result.substring(0, result.indexOf("<pre>")) + result.substring(result.indexOf("<pre>") + 5);
