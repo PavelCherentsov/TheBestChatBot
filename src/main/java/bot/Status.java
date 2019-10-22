@@ -6,5 +6,6 @@ public enum Status {
     GAME,
     STUDY,
     CLASSES,
-    ORGANIZER;
+    ORGANIZER,
+    ORGANIZER_ADD;
 }

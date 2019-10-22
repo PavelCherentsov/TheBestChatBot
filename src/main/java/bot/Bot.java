@@ -1,10 +1,12 @@
 package bot;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
+import com.google.inject.internal.cglib.core.$ClassEmitter;
 import commands.Echo;
 import commands.Hangman;
 import commands.Help;
@@ -16,12 +18,13 @@ import commands.Study;
 import commands.organizer.Organizer;
 
 
-public class Bot {
+public class Bot implements Serializable {
     public Status statusActive = Status.START;
     private HashMap<Status, HashMap<String, BiFunction<Bot, String, String>>> dict = new HashMap<>();
 
     private Hangman game = new Hangman();
     private Organizer organizer = new Organizer();
+    private Study study = new Study();
 
     public Bot() {
         initDict();
@@ -44,11 +47,14 @@ public class Bot {
         dictionaryMenu.put("echo", Echo::echo);
         dictionaryMenu.put("эхо", Echo::echo);
         dictionaryMenu.put("quit", Quit::quit);
+        dictionaryMenu.put("выход", Quit::quit);
+        dictionaryMenu.put("все", Quit::quit);
+        dictionaryMenu.put("всё", Quit::quit);
         dictionaryMenu.put("game", game::startGame);
         dictionaryMenu.put("игра", game::startGame);
         dictionaryMenu.put("виселица", game::startGame);
         dictionaryMenu.put("default", NotUnderstand::notUnderstand);
-        dictionaryMenu.put("study", Study::mainMenu);
+        dictionaryMenu.put("study", study::mainMenu);
         dictionaryMenu.put("organizer", organizer::start);
 
         dict.put(Status.MENU, dictionaryMenu);
@@ -66,17 +72,23 @@ public class Bot {
         dict.put(Status.GAME, dictionaryGame);
 
         HashMap<String, BiFunction<Bot, String, String>> dictStudy = new HashMap<>();
-        dictStudy.put("classes", Study::startClasses);
-        dictStudy.put("help", Study::studyHelp);
-        dictStudy.put("default", Study::def);
-        dictStudy.put("quit", Study::quitToMenu);
+        dictStudy.put("classes", study::startClasses);
+        dictStudy.put("help", study::studyHelp);
+        dictStudy.put("default", study::def);
+        dictStudy.put("quit", study::quitToMenu);
+        dictStudy.put("выход", study::quitToMenu);
+        dictStudy.put("все", study::quitToMenu);
+        dictStudy.put("всё", study::quitToMenu);
 
         dict.put(Status.STUDY, dictStudy);
 
         HashMap<String, BiFunction<Bot, String, String>> dictClasses = new HashMap<>();
-        dictClasses.put("default", Study::getClasses);
-        dictClasses.put("quit", Study::mainMenu);
-        dictClasses.put("help", Study::classesHelp);
+        dictClasses.put("default", study::getClasses);
+        dictClasses.put("quit", study::mainMenu);
+        dictClasses.put("выход", study::mainMenu);
+        dictClasses.put("все", study::mainMenu);
+        dictClasses.put("всё", study::mainMenu);
+        dictClasses.put("help", study::classesHelp);
 
         dict.put(Status.CLASSES, dictClasses);
 
@@ -84,9 +96,22 @@ public class Bot {
         dictOrganizer.put("default", organizer::all);
         dictOrganizer.put("add", organizer::add);
         dictOrganizer.put("all", organizer::all);
+        dictOrganizer.put("completed", organizer::completed);
         dictOrganizer.put("quit", organizer::quit);
+        dictOrganizer.put("выход", organizer::quit);
+        dictOrganizer.put("все", organizer::quit);
+        dictOrganizer.put("всё", organizer::quit);
 
         dict.put(Status.ORGANIZER, dictOrganizer);
+
+        HashMap<String, BiFunction<Bot, String, String>> dictOrganizerPush = new HashMap<>();
+        dictOrganizerPush.put("default", organizer::push);
+        dictOrganizerPush.put("quit", organizer::back);
+        dictOrganizerPush.put("выход", organizer::back);
+        dictOrganizerPush.put("все", organizer::back);
+        dictOrganizerPush.put("всё", organizer::back);
+
+        dict.put(Status.ORGANIZER_ADD, dictOrganizerPush);
     }
 
     public String getAnswer(String line) {
@@ -103,6 +128,12 @@ public class Bot {
         while (true) {
             String line = in.nextLine();
             String result = getAnswer(line);
+            if (result.contains("<pre>" )){
+                result = result.substring(0, result.indexOf("<pre>")) + result.substring(result.indexOf("<pre>") + 5);
+            }
+            if (result.contains("</pre>")){
+                result = result.substring(0, result.indexOf("</pre>")) + result.substring(result.indexOf("</pre>") + 6);
+            }
             System.out.println(result);
         }
     }

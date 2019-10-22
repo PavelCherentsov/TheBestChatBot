@@ -52,6 +52,7 @@ public class Main extends TelegramLongPollingBot {
             }
             result = users.get(chatId).getAnswer(message);
             sendMessage.setText(result);
+            sendMessage.setParseMode(ParseMode.HTML);
             execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();

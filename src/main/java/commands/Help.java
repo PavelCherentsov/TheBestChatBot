@@ -10,6 +10,7 @@ public class Help{
                 " * echo - повторю за тобой\n" +
                 " * study - информация для учебы\n" +
                 " * game - игра 'Виселица'\n" +
+                " * organizer - личный time-manager\n" +
                 " * quit - попрощаться";
     }
 }

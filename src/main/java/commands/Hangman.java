@@ -1,5 +1,13 @@
 package commands;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -7,7 +15,7 @@ import java.util.regex.Pattern;
 import bot.Status;
 import bot.Bot;
 
-public class Hangman {
+public class Hangman implements Serializable {
     private int life;
     private String word;
     private String wordEncrypted;
@@ -22,11 +30,9 @@ public class Hangman {
         words.add("конгруэнтность");
         words.add("уравновеситься");
         words.add("трензельный");
-        words.add("ихневмон");
         words.add("автотележка");
         words.add("выпахивание");
         words.add("серпоклюв");
-        words.add("орясина");
         words.add("возгреметь");
         words.add("солестойкость");
         words.add("слабоуздый");
@@ -66,6 +72,8 @@ public class Hangman {
 
     }
 
+
+
     public String help(Bot bot, String command) {
         return "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
                 "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
@@ -87,9 +95,7 @@ public class Hangman {
     }
 
     private Boolean checkIsLetter(String command){
-        if (command.length() != 1)
-            return false;
-        return Pattern.matches("[а-яА-Я]?", command);
+        return Pattern.matches("[а-яА-Я]{1}", command);
     }
 
     private Boolean checkLetterWas(String command) {
@@ -124,54 +130,68 @@ public class Hangman {
     private ArrayList<String> levels = new ArrayList<String>();
 
     private void initLevels() {
-        levels.add(0, "  _______  \n" +
+        levels.add(0, "<pre>\n" +
+                "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
                 " \\|/    |  \n" +
                 "  |     |  \n" +
                 " / \\    |  \n" +
-                "      -----");
-        levels.add(1, "  _______  \n" +
+                "      -----\n" +
+                "</pre>");
+        levels.add(1, "<pre>\n" +
+                "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
                 " \\|/    |  \n" +
                 "  |     |  \n" +
                 " /      |  \n" +
-                "      -----");
-        levels.add(2, "  _______  \n" +
+                "      -----\n" +
+                "</pre>");
+        levels.add(2, "<pre>\n" +
+                "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
                 " \\|/    |  \n" +
                 "  |     |  \n" +
                 "        |  \n" +
-                "      -----");
-        levels.add(3, "  _______  \n" +
+                "      -----\n" +
+                "</pre>");
+        levels.add(3, "<pre>\n" +
+                "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
                 " \\|     |  \n" +
                 "  |     |  \n" +
                 "        |  \n" +
-                "      -----");
-        levels.add(4, "  _______  \n" +
+                "      -----\n" +
+                "</pre>");
+        levels.add(4, "<pre>\n" +
+                "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
                 "  |     |  \n" +
                 "  |     |  \n" +
                 "        |  \n" +
-                "      -----");
-        levels.add(5, "  _______  \n" +
+                "      -----\n" +
+                "</pre>");
+        levels.add(5, "<pre>\n" +
+                "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
                 "        |  \n" +
                 "        |  \n" +
                 "        |  \n" +
-                "      -----");
-        levels.add(6, "  _______  \n" +
+                "      -----\n" +
+                "</pre>");
+        levels.add(6, "<pre>\n" +
+                "  _______  \n" +
                 "  |    \\|  \n" +
                 "        |  \n" +
                 "        |  \n" +
                 "        |  \n" +
                 "        |  \n" +
-                "      -----");
+                "      -----\n" +
+                "</pre>");
     }
 }
