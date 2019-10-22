@@ -127,7 +127,7 @@ public class Bot implements Serializable {
     }
 
     public void run() {
-        Scanner in = new Scanner(System.in, "Cp1251");
+        Scanner in = new Scanner(System.in, "Cp866");
         while (true) {
             String line = in.nextLine();
             try (FileWriter writer = new FileWriter("test.txt", true))
