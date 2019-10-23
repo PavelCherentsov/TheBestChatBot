@@ -18,6 +18,7 @@ import commands.Owners;
 import commands.Quit;
 import commands.Start;
 import commands.Study;
+import commands.organizer.Flag;
 import commands.organizer.Organizer;
 import java.io.FileWriter;
 
@@ -154,7 +155,7 @@ public class Bot implements Serializable {
         String command = line;
         if (!Pattern.matches(" +", line))
             command = line.split(" ")[0].toLowerCase();
-        return smile_emoji + dict.get(statusActive)
+        return dict.get(statusActive)
                 .getOrDefault(command, dict.get(statusActive).get("default"))
                 .apply(this, line);
     }
@@ -164,13 +165,17 @@ public class Bot implements Serializable {
         while (true) {
             String line = in.nextLine();
             String result = getAnswer(line);
-            if (result.contains("<pre>" )){
-                result = result.substring(0, result.indexOf("<pre>")) + result.substring(result.indexOf("<pre>") + 5);
-            }
-            if (result.contains("</pre>")){
-                result = result.substring(0, result.indexOf("</pre>")) + result.substring(result.indexOf("</pre>") + 6);
-            }
+            result = processing(result);
             System.out.println(result);
         }
+    }
+
+    private String processing(String line){
+        line = line.replaceAll("<pre>", "");
+        line = line.replaceAll("</pre>", "");
+        for (Flag e: Flag.values()) {
+            line = line.replaceAll(e.getEmoji(), e.getName());
+        }
+        return line;
     }
 }

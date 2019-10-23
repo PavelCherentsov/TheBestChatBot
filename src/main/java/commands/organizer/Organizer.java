@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import bot.Bot;
 import bot.Status;
 
+
 public class Organizer implements Serializable {
     private ArrayList<OrganizerElement> list = new ArrayList<>();
     private OrganizerElement currentTask;
@@ -33,7 +34,7 @@ public class Organizer implements Serializable {
         for (OrganizerElement e : list) {
             if (e.flag != Flag.COMPLETED)
                 e.updateFlag();
-            result = result + Integer.toString(number++) + "\t" + e.flag + "\t\t\t" +
+            result = result + Integer.toString(number++) + "\t" + e.flag.getEmoji() + "\t\t" +
                     getDateFormat(e.date.getTime()) + "\t" + e.task + "\n";
         }
         result += "\n</pre>";

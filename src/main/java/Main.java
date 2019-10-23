@@ -1,4 +1,5 @@
 import bot.Bot;
+import com.vdurmont.emoji.EmojiParser;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -51,9 +52,11 @@ public class Main extends TelegramLongPollingBot {
                 users.put(chatId, new Bot());
             }
             result = users.get(chatId).getAnswer(message);
+            result = EmojiParser.parseToUnicode(result);
             sendMessage.setText(result);
             sendMessage.setParseMode(ParseMode.HTML);
             execute(sendMessage);
+
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
