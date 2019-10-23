@@ -21,32 +21,32 @@ public class Schedule {
                 "Экономика"};
         switch (day.toLowerCase())
         {
-            case "m": {
+            case "пн": {
                 daySchedule.add(new ScheduleElement(3, "12:50", subjects[0], "632"));
                 break;
             }
-            case "t": {
+            case "вт": {
                 daySchedule.add(new ScheduleElement(2, "10:50", subjects[1], "632"));
                 daySchedule.add(new ScheduleElement(3, "12:50", subjects[2], "индив."));
                 daySchedule.add(new ScheduleElement(4, "14:30", subjects[3], "532"));
                 daySchedule.add(new ScheduleElement(5, "16:10", subjects[4], "150"));
                 break;
             }
-            case "w": {
+            case "ср": {
                 daySchedule.add(new ScheduleElement(2, "10:15", subjects[5], "индив."));
                 daySchedule.add(new ScheduleElement(3, "12:50", subjects[6], "509"));
                 daySchedule.add(new ScheduleElement(4, "14:30", subjects[6], "605"));
                 daySchedule.add(new ScheduleElement(5, "16:10", subjects[3], "612"));
                 break;
             }
-            case "th": {
+            case "чт": {
                 daySchedule.add(new ScheduleElement(1, "09:00", subjects[2], "индив."));
                 daySchedule.add(new ScheduleElement(2, "10:40", subjects[3], "532"));
                 daySchedule.add(new ScheduleElement(3, "12:50", subjects[7], "150"));
                 daySchedule.add(new ScheduleElement(4, "14:30", subjects[0], "526"));
                 break;
             }
-            case "f": {
+            case "пт": {
                 daySchedule.add(new ScheduleElement(2, "10:40", subjects[6], "532"));
                 daySchedule.add(new ScheduleElement(3, "12:50", subjects[6], "628"));
                 daySchedule.add(new ScheduleElement(5, "16:00", subjects[5], "индив."));

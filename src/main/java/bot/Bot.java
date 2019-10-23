@@ -76,6 +76,7 @@ public class Bot implements Serializable {
 
         HashMap<String, BiFunction<Bot, String, String>> dictStudy = new HashMap<>();
         dictStudy.put("classes", study::startClasses);
+        dictStudy.put("пары", study::startClasses);
         dictStudy.put("help", study::studyHelp);
         dictStudy.put("default", study::def);
         dictStudy.put("quit", study::quitToMenu);
