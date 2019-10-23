@@ -20,9 +20,10 @@ public class Organizer implements Serializable {
     }
 
     public String help(Bot bot, String command) {
-        return "'add' - добавить задачу, \n'all' - показать все задачи, \n'edit' - редактировать," +
-                "\n'show' - показать задачи по приоритетам или дате, \n'completed' - отметить задачу как выполненную," +
-                "\n'quit' - выход в меню";
+        return "* 'add' - добавить задачу, \n* 'all' - показать все задачи, \n* 'edit' - редактировать," +
+                "\n* 'show' - показать задачи по приоритетам или дате, " +
+                "* \n'completed' - отметить задачу как выполненную," +
+                "* \n'quit' - выход в меню";
     }
 
     public String addHelp(Bot bot, String command)
@@ -116,7 +117,7 @@ public class Organizer implements Serializable {
     }
 
     public String showByDate(String command) {
-        String result = "<pre>\nНа " + command + " нужно:\n";
+        String result = "<pre>На " + command + " нужно:\n";
         for (OrganizerElement e : list) {
             if (e.flag != Flag.COMPLETED && e.date.compareTo(getDate(command)) == 0)
                 result = result + e.task + "\n";
@@ -126,7 +127,7 @@ public class Organizer implements Serializable {
     }
 
     public String showByFlag(Flag flag) {
-        String result = "<pre>\n" + flag.getName() + ":\n";
+        String result = "<pre>" + flag.getName() + ":\n";
         for (OrganizerElement e : list) {
             if (e.flag == flag)
                 result = result + getDateFormat(e.date.getTime())
@@ -183,8 +184,8 @@ public class Organizer implements Serializable {
 
     public String edit_questions(Bot bot, String command)
     {
-        String[] good_commands = new String[] {"date", "task", "all"};
-        if (Arrays.asList(good_commands).contains(command))
+        String[] goodCommands = new String[] {"date", "task", "all"};
+        if (Arrays.asList(goodCommands).contains(command))
             editType = command;
         HashMap<String, String> questions = new HashMap<>();
         questions.put("date", "Введи дату в формате ДД.ММ.ГГГГ");
