@@ -39,7 +39,9 @@ public class Organizer implements Serializable {
             result = result + "\n" +Integer.toString(number++) + "\t" + e.flag.getEmoji() + "\t\t" +
                     getDateFormat(e.date.getTime()) + "\t" + e.task;
         }
-        result += "\n</pre>";
+        result += "</pre>";
+        if (list.isEmpty())
+            return "Заданий пока нет";
         return result;
     }
 
@@ -53,6 +55,9 @@ public class Organizer implements Serializable {
         list.get(Integer.parseInt(command.split(" ")[1])).flag = Flag.COMPLETED;
         return "Выполнено";
         }
+        catch (IndexOutOfBoundsException e) {
+        return "Неверный номер задания";
+        }
         catch (Exception e)
         {
             return "Неправильный ввод :( \nВведи 'completed [N задачи]'";
@@ -60,18 +65,14 @@ public class Organizer implements Serializable {
     }
 
     public String push(Bot bot, String command) {
-        try {
-            String date = command.split(" ")[0];
-            String task = command.split("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4} ")[1];
-            list.add(new OrganizerElement(getDate(date), task));
-            Collections.sort(list);
-            bot.statusActive = Status.ORGANIZER;
-            return "Задание добавлено";
-        }
-        catch (IndexOutOfBoundsException e)
-        {
-            return "Некорректный ввод :( \nВведи еще раз или пиши 'back'";
-        }
+        if (!Pattern.matches("(\\d+\\.){2}\\d+ .+", command))
+            return noCorrect();
+        String date = command.split(" ")[0];
+        String task = command.split("(\\d+\\.){2}\\d+ ")[1];
+        list.add(new OrganizerElement(getDate(date), task));
+        Collections.sort(list);
+        bot.statusActive = Status.ORGANIZER;
+        return "Задание добавлено";
     }
 
     private GregorianCalendar getDate(String date) {
@@ -88,6 +89,8 @@ public class Organizer implements Serializable {
 
     public String showParse(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER;
+        if (list.isEmpty())
+            return "Заданий пока нет";
         if (Pattern.matches("([0-9]{2}\\.){2}[0-9]{4}", command))
             return showByDate(command);
         if (Pattern.matches("comp.*", command.toLowerCase()))
@@ -98,6 +101,10 @@ public class Organizer implements Serializable {
             return showByFlag(Flag.DURING);
         if (Pattern.matches("fail.*", command.toLowerCase()))
             return showByFlag(Flag.FAILED);
+        return noCorrect();
+    }
+
+    public String noCorrect(){
         return "Я тебя не понял, напиши 'help' для помощи";
     }
 
