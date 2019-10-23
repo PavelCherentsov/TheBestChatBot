@@ -8,5 +8,6 @@ public enum Status {
     CLASSES,
     ORGANIZER,
     ORGANIZER_ADD,
-    ORGANIZER_EDIT;
+    ORGANIZER_EDIT,
+    ORGANIZER_SHOW;
 }

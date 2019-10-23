@@ -31,12 +31,6 @@ public class OrganizerElement implements Comparable<OrganizerElement> {
     }
 
     @Override
-    public String toString(){
-        updateFlag();
-        return flag + "\t" + new SimpleDateFormat("dd MMMM y").format(date.getTime()) + "\t" + task;
-    }
-
-    @Override
     public int compareTo(OrganizerElement o) {
         return date.compareTo(o.date);
     }
