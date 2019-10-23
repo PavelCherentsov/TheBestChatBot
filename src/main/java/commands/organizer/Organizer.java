@@ -12,7 +12,7 @@ public class Organizer implements Serializable {
     private ArrayList<OrganizerElement> list = new ArrayList<>();
 
     public String showDefault(Bot bot, String command) {
-        return "Введи 'help', чтобы узнать все возмоности органайзера";
+        return "Введи 'help', чтобы узнать все возможности";
     }
 
     public String help(Bot bot, String command) {
@@ -21,7 +21,7 @@ public class Organizer implements Serializable {
 
     public String start(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER;
-        return "ОРГАНАЙЗЕР";
+        return "Приветствую, я твой личный Time-Manager.";
     }
 
     public String all(Bot bot, String command) {
