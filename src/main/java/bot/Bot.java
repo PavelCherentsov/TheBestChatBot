@@ -121,6 +121,9 @@ public class Bot implements Serializable {
         HashMap<String, BiFunction<Bot, String, String>> dictEdit = new HashMap<>();
         dictEdit.put("default", organizer::edit);
         dictEdit.put("back", organizer::back);
+        dictEdit.put("date", organizer::edit_questions);
+        dictEdit.put("task", organizer::edit_questions);
+        dictEdit.put("all", organizer::edit_questions);
 
         dict.put(Status.ORGANIZER_EDIT, dictEdit);
     }

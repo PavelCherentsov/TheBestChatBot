@@ -2,6 +2,7 @@ package commands.organizer;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -17,15 +18,33 @@ public class OrganizerElement implements Serializable {
         this.task = task;
     }
 
+    public void changeDate(GregorianCalendar date)
+    {
+        this.date = date;
+    }
+
+    public void changeTask (String task)
+    {
+        this.task = task;
+    }
+
     public void updateFlag(){
+        boolean changed = false;
         GregorianCalendar d = new GregorianCalendar();
-        d.roll(Calendar.DAY_OF_MONTH, +3);
+        d.add(Calendar.DAY_OF_MONTH, +3);
         if (date.before(d)){
             flag = Flag.DEADLINE_IS_COMING;
+            changed = true;
         }
-        d.roll(Calendar.DAY_OF_MONTH, -4);
+        d.add(Calendar.DAY_OF_MONTH, -4);
         if (date.before(d)){
             flag = Flag.FAILED;
+            changed = true;
+        }
+
+        if (!changed)
+        {
+            flag = Flag.DURING;
         }
 
     }
