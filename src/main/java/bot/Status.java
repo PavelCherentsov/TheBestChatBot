@@ -9,6 +9,5 @@ public enum Status {
     ORGANIZER,
     ORGANIZER_ADD,
     ORGANIZER_EDIT,
-    ORGANIZER_COMPLETED,
     ORGANIZER_SHOW;
 }

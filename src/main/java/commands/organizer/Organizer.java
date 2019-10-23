@@ -20,9 +20,14 @@ public class Organizer implements Serializable {
     }
 
     public String help(Bot bot, String command) {
-        return "'add' - добавить задачу, \n'all' - показать все задачи, \n'edit' - редактировать" +
+        return "'add' - добавить задачу, \n'all' - показать все задачи, \n'edit' - редактировать," +
                 "\n'show' - показать задачи по приоритетам или дате, \n'completed' - отметить задачу как выполненную," +
                 "\n'quit' - выход в меню";
+    }
+
+    public String addHelp(Bot bot, String command)
+    {
+        return "Введи новое задание: ДД.ММ.ГГГГ task \n'back' - вернуться назад";
     }
 
     public String start(Bot bot, String command) {
@@ -47,7 +52,7 @@ public class Organizer implements Serializable {
 
     public String add(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_ADD;
-        return "Введите новое задание: ДД.ММ.ГГГГ task";
+        return "Введи новое задание: ДД.ММ.ГГГГ task";
     }
 
     public String completed(Bot bot, String command) {
@@ -66,7 +71,7 @@ public class Organizer implements Serializable {
 
     public String push(Bot bot, String command) {
         if (!Pattern.matches("(\\d+\\.){2}\\d+ .+", command))
-            return noCorrect();
+            return notCorrect();
         String date = command.split(" ")[0];
         String task = command.split("(\\d+\\.){2}\\d+ ")[1];
         list.add(new OrganizerElement(getDate(date), task));
@@ -93,18 +98,20 @@ public class Organizer implements Serializable {
             return "Заданий пока нет";
         if (Pattern.matches("([0-9]{2}\\.){2}[0-9]{4}", command))
             return showByDate(command);
-        if (Pattern.matches("comp.*", command.toLowerCase()))
+        if (Pattern.matches("вып.*", command.toLowerCase()))
             return showByFlag(Flag.COMPLETED);
-        if (Pattern.matches("dead.*", command.toLowerCase()))
+        if (Pattern.matches("дед.*", command.toLowerCase()) ||
+                Pattern.matches("ско.*", command.toLowerCase()))
             return showByFlag(Flag.DEADLINE_IS_COMING);
-        if (Pattern.matches("dur.*", command.toLowerCase()))
+        if (Pattern.matches("в п.*", command.toLowerCase()) ||
+                Pattern.matches("про.*", command.toLowerCase()))
             return showByFlag(Flag.DURING);
-        if (Pattern.matches("fail.*", command.toLowerCase()))
+        if (Pattern.matches("пот.*", command.toLowerCase()))
             return showByFlag(Flag.FAILED);
-        return noCorrect();
+        return notCorrect();
     }
 
-    public String noCorrect(){
+    public String notCorrect(){
         return "Я тебя не понял, напиши 'help' для помощи";
     }
 
@@ -119,9 +126,9 @@ public class Organizer implements Serializable {
     }
 
     public String showByFlag(Flag flag) {
-        String result = "<pre>\n" + flag + ":\n";
+        String result = "<pre>\n" + flag.getName() + ":\n";
         for (OrganizerElement e : list) {
-            if (e.flag != Flag.COMPLETED && e.flag == flag)
+            if (e.flag == flag)
                 result = result + getDateFormat(e.date.getTime())
                         + "\t\t" + e.task + "\n";
         }
@@ -146,7 +153,7 @@ public class Organizer implements Serializable {
 
     public String start_edit(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_EDIT;
-        return "Введите номер задания, которое хотите изменить";
+        return "Введи номер задания, которое надо изменить";
     }
 
     public String edit(Bot bot, String command)
@@ -168,7 +175,7 @@ public class Organizer implements Serializable {
             currentTask = task;
             return "Что меняем? Дату - date, задание - task, дату и задание - all";
         } catch (NumberFormatException e) {
-            return "Неверный ввод. Введите номер задания или 'back', чтобы вернуться назад";
+            return "Неверный ввод. Введи номер задания или 'back', чтобы вернуться назад";
         } catch (IndexOutOfBoundsException e) {
             return "Неверный номер задания";
         }

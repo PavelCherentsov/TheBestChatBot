@@ -126,6 +126,9 @@ public class Bot implements Serializable {
         dictOrganizerPush.put("выход", organizer::quit);
         dictOrganizerPush.put("назад", organizer::back);
         dictOrganizerPush.put("back", organizer::back);
+        dictOrganizerPush.put("help", organizer::addHelp);
+        dictOrganizerPush.put("хелп", organizer::addHelp);
+        dictOrganizerPush.put("помощь", organizer::addHelp);
 
         dict.put(Status.ORGANIZER_ADD, dictOrganizerPush);
 
