@@ -11,6 +11,14 @@ import bot.Status;
 public class Organizer implements Serializable {
     private ArrayList<OrganizerElement> list = new ArrayList<>();
 
+    public String showDefault(Bot bot, String command) {
+        return "Введи 'help', чтобы узнать все возмоности органайзера";
+    }
+
+    public String help(Bot bot, String command) {
+        return "help)";
+    }
+
     public String start(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER;
         return "ОРГАНАЙЗЕР";
@@ -23,7 +31,7 @@ public class Organizer implements Serializable {
             if (e.flag != Flag.COMPLETED)
                 e.updateFlag();
             result = result + Integer.toString(number++) + "\t" + e.flag + "\t\t\t" +
-                    new SimpleDateFormat("dd MMMM y").format(e.date.getTime()) + "\t" + e.task + "\n";
+                    getDateFormat(e.date.getTime()) + "\t" + e.task + "\n";
         }
         result += "\n</pre>";
         return result;
@@ -86,11 +94,11 @@ public class Organizer implements Serializable {
     }
 
     public String showByFlag(Flag flag) {
-        String result = "<pre>\n"+flag+":\n";
+        String result = "<pre>\n" + flag + ":\n";
         for (OrganizerElement e : list) {
             if (e.flag != Flag.COMPLETED && e.flag == flag)
-                result = result + new SimpleDateFormat("dd MMMM y").format(e.date.getTime())
-                        + "\t\t"+ e.task + "\n";
+                result = result + getDateFormat(e.date.getTime())
+                        + "\t\t" + e.task + "\n";
         }
         result += "\n</pre>";
         return result;
@@ -98,12 +106,16 @@ public class Organizer implements Serializable {
 
     public String back(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER;
-        return "Отмена записи задания";
+        return "Отмена записи";
     }
 
     public String quit(Bot bot, String command) {
         bot.statusActive = Status.MENU;
         return "Выход в главное меню";
+    }
+
+    private String getDateFormat(Date date) {
+        return new SimpleDateFormat("dd.MM.y").format(date);
     }
 
     public String start_edit(Bot bot, String command) {

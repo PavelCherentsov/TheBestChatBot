@@ -97,7 +97,7 @@ public class Bot implements Serializable {
         dict.put(Status.CLASSES, dictClasses);
 
         HashMap<String, BiFunction<Bot, String, String>> dictOrganizer = new HashMap<>();
-        dictOrganizer.put("default", organizer::all);
+        dictOrganizer.put("default", organizer::showDefault);
         dictOrganizer.put("add", organizer::add);
         dictOrganizer.put("all", organizer::all);
         dictOrganizer.put("completed", organizer::completed);
@@ -107,6 +107,7 @@ public class Bot implements Serializable {
         dictOrganizer.put("всё", organizer::quit);
         dictOrganizer.put("edit", organizer::start_edit);
         dictOrganizer.put("show", organizer::show);
+        dictOrganizer.put("help", organizer::help);
 
         dict.put(Status.ORGANIZER, dictOrganizer);
 
