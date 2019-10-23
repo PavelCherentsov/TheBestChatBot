@@ -10,6 +10,9 @@ import bot.Status;
 
 public class Organizer implements Serializable {
     private ArrayList<OrganizerElement> list = new ArrayList<>();
+    private OrganizerElement currentTask;
+    private String editType = "";
+    private int n;
 
     public String showDefault(Bot bot, String command) {
         return "Введи 'help', чтобы узнать все возможности";
@@ -106,7 +109,12 @@ public class Organizer implements Serializable {
 
     public String back(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER;
+<<<<<<< HEAD
+        editType = "";
+        return "Отмена записи задания";
+=======
         return "Отмена записи";
+>>>>>>> c79596d8743f37bbe48df04ce5d6049b61c6e354
     }
 
     public String quit(Bot bot, String command) {
@@ -123,17 +131,92 @@ public class Organizer implements Serializable {
         return "Введите номер задания, которое хотите изменить";
     }
 
+<<<<<<< HEAD
+    public String edit(Bot bot, String command)
+    {
+        if (list.size() == 0)
+        {
+            bot.statusActive = Status.ORGANIZER;
+            return "Нет заданий для редактирования";
+        }
+
+        if (!editType.equals(""))
+        {
+            return edit_choice(bot, command);
+        }
+        try
+        {
+            OrganizerElement task = list.get(Integer.parseInt(command));
+            n = Integer.parseInt(command);
+            String result =  task.toString();
+            currentTask = task;
+            result += "\nЧто меняем? Дату - date, задание - task, дату и задание - all";
+=======
     public String edit(Bot bot, String command) {
         try {
             OrganizerElement task = list.get(Integer.parseInt(command));
             //list.set(task, value);
             String result = task.toString();
             result += "\nЧто меняем? Дату - 1, задание - 2, дату и задание - 3";
+>>>>>>> c79596d8743f37bbe48df04ce5d6049b61c6e354
             return result;
         } catch (NumberFormatException e) {
             return "Неверный ввод. Введите номер задания или 'back', чтобы вернуться назад";
         } catch (IndexOutOfBoundsException e) {
             return "Неверный номер задания";
+        }
+    }
+
+    public String edit_questions(Bot bot, String command)
+    {
+        String[] good_commands = new String[] {"date", "task", "all"};
+        if (Arrays.asList(good_commands).contains(command))
+            editType = command;
+        HashMap<String, String> questions = new HashMap<>();
+        questions.put("date", "Введи дату в формате ДД.ММ.ГГГГ");
+        questions.put("task", "Введи таск");
+        questions.put("all", "Введите задание: ДД.ММ.ГГГГ task");
+        questions.put("default", "Неверный ввод");
+        return questions.getOrDefault(command, questions.get("default"));
+    }
+
+    private String edit_choice(Bot bot, String command)
+    {
+        int day;
+        int month;
+        int year;
+        String result = "";
+        try {
+            switch (editType) {
+                case ("date"):
+                    day = Integer.parseInt(command.split(" ")[0].split("\\.")[0]);
+                    month = Integer.parseInt(command.split(" ")[0].split("\\.")[1]);
+                    year = Integer.parseInt(command.split(" ")[0].split("\\.")[2]);
+                    currentTask.changeDate(new GregorianCalendar(year, month - 1, day));
+                    currentTask.updateFlag();
+                    result += "Дата изменена";
+                    break;
+                case ("task"):
+                    currentTask.changeTask(command);
+                    result += "Задание изменено";
+                    break;
+                case ("all"):
+                    day = Integer.parseInt(command.split(" ")[0].split("\\.")[0]);
+                    month = Integer.parseInt(command.split(" ")[0].split("\\.")[1]);
+                    year = Integer.parseInt(command.split(" ")[0].split("\\.")[2]);
+                    String task = command.split("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4} ")[1];
+                    list.set(n, new OrganizerElement(new GregorianCalendar(year, month - 1, day), task));
+                    n = -1;
+                    result += "Задача изменена";
+                    break;
+            }
+            editType = "";
+            bot.statusActive = Status.ORGANIZER;
+            return result;
+        }
+        catch (Exception e)
+        {
+            return "Неверный ввод. Напиши еще раз или пиши 'back', чтобы вернуться назад";
         }
     }
 }
