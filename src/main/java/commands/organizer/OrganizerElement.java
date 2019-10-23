@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class OrganizerElement implements Serializable {
+public class OrganizerElement implements Comparable<OrganizerElement> {
     public Flag flag;
     public GregorianCalendar date;
     public String task;
@@ -34,5 +34,10 @@ public class OrganizerElement implements Serializable {
     public String toString(){
         updateFlag();
         return flag + "\t" + new SimpleDateFormat("dd MMMM y").format(date.getTime()) + "\t" + task;
+    }
+
+    @Override
+    public int compareTo(OrganizerElement o) {
+        return date.compareTo(o.date);
     }
 }

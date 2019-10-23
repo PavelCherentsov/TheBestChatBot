@@ -49,8 +49,7 @@ public class Organizer implements Serializable {
         int year = Integer.parseInt(command.split(" ")[0].split("\\.")[2]);
         String task = command.split("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4} ")[1];
         list.add(new OrganizerElement(new GregorianCalendar(year, month - 1, day), task));
-        //не робит
-        Collections.sort(list, (x, y) -> x.date.after(y.date) ? 1 : 0);
+        Collections.sort(list);
 
         bot.statusActive = Status.ORGANIZER;
         return "Задание добавлено";
