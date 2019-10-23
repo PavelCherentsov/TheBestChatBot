@@ -29,13 +29,13 @@ public class Organizer implements Serializable {
     }
 
     public String all(Bot bot, String command) {
-        String result = "<pre>\nВсе задания:\n";
+        String result = "<pre>Все задания:\n";
         int number = 0;
         for (OrganizerElement e : list) {
             if (e.flag != Flag.COMPLETED)
                 e.updateFlag();
-            result = result + Integer.toString(number++) + "\t" + e.flag.getEmoji() + "\t\t" +
-                    getDateFormat(e.date.getTime()) + "\t" + e.task + "\n";
+            result = result + "\n" +Integer.toString(number++) + "\t" + e.flag.getEmoji() + "\t\t" +
+                    getDateFormat(e.date.getTime()) + "\t" + e.task;
         }
         result += "\n</pre>";
         return result;
