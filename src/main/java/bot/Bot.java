@@ -105,6 +105,7 @@ public class Bot implements Serializable {
         dictOrganizer.put("выход", organizer::quit);
         dictOrganizer.put("все", organizer::quit);
         dictOrganizer.put("всё", organizer::quit);
+        dictOrganizer.put("edit", organizer::start_edit);
 
         dict.put(Status.ORGANIZER, dictOrganizer);
 
@@ -116,6 +117,12 @@ public class Bot implements Serializable {
         dictOrganizerPush.put("всё", organizer::back);
 
         dict.put(Status.ORGANIZER_ADD, dictOrganizerPush);
+
+        HashMap<String, BiFunction<Bot, String, String>> dictEdit = new HashMap<>();
+        dictEdit.put("default", organizer::edit);
+        dictEdit.put("back", organizer::back);
+
+        dict.put(Status.ORGANIZER_EDIT, dictEdit);
     }
 
     public String getAnswer(String line) {

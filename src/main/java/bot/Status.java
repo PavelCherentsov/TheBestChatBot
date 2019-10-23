@@ -7,5 +7,6 @@ public enum Status {
     STUDY,
     CLASSES,
     ORGANIZER,
-    ORGANIZER_ADD;
+    ORGANIZER_ADD,
+    ORGANIZER_EDIT;
 }

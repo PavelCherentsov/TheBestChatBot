@@ -16,7 +16,7 @@ public class Organizer implements Serializable {
     }
 
     public String all(Bot bot, String command) {
-        String result = "<pre>\n";
+        String result = "<pre>\nВсе задания:\n";
         int number = 0;
         for (OrganizerElement e : list) {
             if (e.flag != Flag.COMPLETED)
@@ -64,5 +64,31 @@ public class Organizer implements Serializable {
     public String quit(Bot bot, String command) {
         bot.statusActive = Status.MENU;
         return "Выход в главное меню";
+    }
+
+    public String start_edit(Bot bot, String command)
+    {
+        bot.statusActive = Status.ORGANIZER_EDIT;
+        return "Введите номер задания, которое хотите изменить";
+    }
+
+    public String edit(Bot bot, String command)
+    {
+        try
+        {
+            OrganizerElement task = list.get(Integer.parseInt(command));
+            //list.set(task, value);
+            String result =  task.toString();
+            result += "\nЧто меняем? Дату - 1, задание - 2, дату и задание - 3";
+            return result;
+        }
+        catch (NumberFormatException e)
+        {
+            return "Неверный ввод. Введите номер задания или 'back', чтобы вернуться назад";
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+            return "Неверный номер задания";
+        }
     }
 }
