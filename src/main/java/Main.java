@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Main extends TelegramLongPollingBot {
     private static final String BOT_NAME = "WhoPi";
@@ -37,8 +38,8 @@ public class Main extends TelegramLongPollingBot {
             }
         }
     }
-
-    private HashMap<Long, Bot> users = new HashMap<>();
+    
+    private ConcurrentHashMap<Long, Bot> users = new ConcurrentHashMap<>();
 
     @Override
     public void onUpdateReceived(Update update) {
