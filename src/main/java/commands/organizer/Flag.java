@@ -1,7 +1,7 @@
 package commands.organizer;
 
 public enum Flag {
-    COMPLETED(":white_check_mark:", "Выполненно"),
+    COMPLETED(":white_check_mark:", "Выполнено"),
     DEADLINE_IS_COMING(":fire:", "Скоро дедлайн"),
     DURING(":arrows_counterclockwise:", "В процессе"),
     FAILED(":black_circle:", "Потрачено");

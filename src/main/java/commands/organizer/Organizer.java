@@ -20,7 +20,9 @@ public class Organizer implements Serializable {
     }
 
     public String help(Bot bot, String command) {
-        return "help)";
+        return "'add' - добавить задачу, \n'all' - показать все задачи, \n'edit' - редактировать" +
+                "\n'show' - показать задачи по приоритетам или дате, \n'completed' - отметить задачу как выполненную," +
+                "\n'quit' - выход в меню";
     }
 
     public String start(Bot bot, String command) {
@@ -47,17 +49,29 @@ public class Organizer implements Serializable {
     }
 
     public String completed(Bot bot, String command) {
+        try {
         list.get(Integer.parseInt(command.split(" ")[1])).flag = Flag.COMPLETED;
         return "Выполнено";
+        }
+        catch (Exception e)
+        {
+            return "Неправильный ввод :( \nВведи 'completed [N задачи]'";
+        }
     }
 
     public String push(Bot bot, String command) {
-        String date = command.split(" ")[0];
-        String task = command.split("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4} ")[1];
-        list.add(new OrganizerElement(getDate(date), task));
-        Collections.sort(list);
-        bot.statusActive = Status.ORGANIZER;
-        return "Задание добавлено";
+        try {
+            String date = command.split(" ")[0];
+            String task = command.split("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4} ")[1];
+            list.add(new OrganizerElement(getDate(date), task));
+            Collections.sort(list);
+            bot.statusActive = Status.ORGANIZER;
+            return "Задание добавлено";
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+            return "Некорректный ввод :( \nВведи еще раз или пиши 'back'";
+        }
     }
 
     private GregorianCalendar getDate(String date) {
@@ -144,10 +158,8 @@ public class Organizer implements Serializable {
         {
             OrganizerElement task = list.get(Integer.parseInt(command));
             n = Integer.parseInt(command);
-            String result =  task.toString();
             currentTask = task;
-            result += "\nЧто меняем? Дату - date, задание - task, дату и задание - all";
-            return result;
+            return "Что меняем? Дату - date, задание - task, дату и задание - all";
         } catch (NumberFormatException e) {
             return "Неверный ввод. Введите номер задания или 'back', чтобы вернуться назад";
         } catch (IndexOutOfBoundsException e) {
@@ -163,7 +175,7 @@ public class Organizer implements Serializable {
         HashMap<String, String> questions = new HashMap<>();
         questions.put("date", "Введи дату в формате ДД.ММ.ГГГГ");
         questions.put("task", "Введи таск");
-        questions.put("all", "Введите задание: ДД.ММ.ГГГГ task");
+        questions.put("all", "Введи задание: ДД.ММ.ГГГГ task");
         questions.put("default", "Неверный ввод");
         return questions.getOrDefault(command, questions.get("default"));
     }
