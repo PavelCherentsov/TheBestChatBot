@@ -9,6 +9,7 @@ import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
 import com.google.inject.internal.cglib.core.$ClassEmitter;
+import com.vdurmont.emoji.EmojiParser;
 import commands.Echo;
 import commands.Hangman;
 import commands.Help;
@@ -28,6 +29,8 @@ public class Bot implements Serializable {
     private Hangman game = new Hangman();
     private Organizer organizer = new Organizer();
     private Study study = new Study();
+
+    private String smile_emoji = EmojiParser.parseToUnicode("U+1F602");
 
     public Bot() {
         initDict();
@@ -148,7 +151,7 @@ public class Bot implements Serializable {
         String command = line;
         if (!Pattern.matches(" +", line))
             command = line.split(" ")[0].toLowerCase();
-        return dict.get(statusActive)
+        return smile_emoji + dict.get(statusActive)
                 .getOrDefault(command, dict.get(statusActive).get("default"))
                 .apply(this, line);
     }
