@@ -11,7 +11,7 @@
 ## Задачи на 2 неделю
 - [x] Telegram
 * [java/util/concurrent](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/package-summary.html)
-- [ ] Органайзер
+- [x] Органайзер
 ## Задачи на 3 неделю
 - [ ] Города
 - [ ] Преподы (в study)
