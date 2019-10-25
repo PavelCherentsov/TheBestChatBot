@@ -20,10 +20,19 @@ public class Organizer implements Serializable {
     }
 
     public String help(Bot bot, String command) {
-        return "* 'add' - добавить задачу, \n* 'all' - показать все задачи, \n* 'edit' - редактировать," +
-                "\n* 'show' - показать задачи по приоритетам или дате, " +
-                "* \n'completed' - отметить задачу как выполненную," +
-                "* \n'quit' - выход в меню";
+        return  "Справка по пользованию Time-Manager'ом:\n" +
+                "\nФлаги:\n" +
+                Flag.COMPLETED.getEmoji() + " - Выполнено\n" +
+                Flag.DURING.getEmoji() + " - В процессе\n" +
+                Flag.DEADLINE_IS_COMING.getEmoji() + " - Скоро дедлайн\n" +
+                Flag.FAILED.getEmoji() + " - Потрачено\n" +
+                "\nКоманды:\n" +
+                "* 'add' - добавить задачу, \n" +
+                "* 'all' - показать все задачи, \n" +
+                "* 'edit' - редактировать,\n" +
+                "* 'show' - показать задачи по приоритетам или дате,\n" +
+                "* 'completed' - отметить задачу как выполненную,\n" +
+                "* 'quit' - выход в меню";
     }
 
     public String addHelp(Bot bot, String command)
@@ -37,7 +46,7 @@ public class Organizer implements Serializable {
     }
 
     public String all(Bot bot, String command) {
-        String result = "<pre>Все задания:\n";
+        String result = "Все задания:\n<pre>";
         int number = 0;
         for (OrganizerElement e : list) {
             if (e.flag != Flag.COMPLETED)
@@ -53,7 +62,7 @@ public class Organizer implements Serializable {
 
     public String add(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_ADD;
-        return "Введи новое задание: ДД.ММ.ГГГГ task";
+        return "Введи новое задание: ДД.ММ.ГГГГ ЗАДАНИЕ";
     }
 
     public String completed(Bot bot, String command) {
@@ -117,12 +126,12 @@ public class Organizer implements Serializable {
     }
 
     public String showByDate(String command) {
-        String result = "<pre>На " + command + " нужно:\n";
+        String result = "На " + command + " нужно:\n<pre>";
         for (OrganizerElement e : list) {
             if (e.flag != Flag.COMPLETED && e.date.compareTo(getDate(command)) == 0)
-                result = result + e.task + "\n";
+                result = result + "\n" + e.task;
         }
-        result += "\n</pre>";
+        result += "</pre>";
         return result;
     }
 
@@ -130,10 +139,9 @@ public class Organizer implements Serializable {
         String result = "<pre>" + flag.getName() + ":\n";
         for (OrganizerElement e : list) {
             if (e.flag == flag)
-                result = result + getDateFormat(e.date.getTime())
-                        + "\t\t" + e.task + "\n";
+                result = result + "\n" + getDateFormat(e.date.getTime()) + "\t\t" + e.task ;
         }
-        result += "\n</pre>";
+        result += "</pre>";
         return result;
     }
 
@@ -197,17 +205,11 @@ public class Organizer implements Serializable {
 
     private String edit_choice(Bot bot, String command)
     {
-        int day;
-        int month;
-        int year;
         String result = "";
         try {
             switch (editType) {
                 case ("date"):
-                    day = Integer.parseInt(command.split(" ")[0].split("\\.")[0]);
-                    month = Integer.parseInt(command.split(" ")[0].split("\\.")[1]);
-                    year = Integer.parseInt(command.split(" ")[0].split("\\.")[2]);
-                    currentTask.changeDate(new GregorianCalendar(year, month - 1, day));
+                    currentTask.changeDate(getDate(command.split(" ")[0]));
                     currentTask.updateFlag();
                     result += "Дата изменена";
                     break;
@@ -216,11 +218,8 @@ public class Organizer implements Serializable {
                     result += "Задание изменено";
                     break;
                 case ("all"):
-                    day = Integer.parseInt(command.split(" ")[0].split("\\.")[0]);
-                    month = Integer.parseInt(command.split(" ")[0].split("\\.")[1]);
-                    year = Integer.parseInt(command.split(" ")[0].split("\\.")[2]);
-                    String task = command.split("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4} ")[1];
-                    list.set(n, new OrganizerElement(new GregorianCalendar(year, month - 1, day), task));
+                    String task = command.split("([0-9]{2}\\.){2}\\.[0-9]{4} ")[1];
+                    list.set(n, new OrganizerElement(getDate(command.split(" ")[0]), task));
                     n = -1;
                     result += "Задача изменена";
                     break;
