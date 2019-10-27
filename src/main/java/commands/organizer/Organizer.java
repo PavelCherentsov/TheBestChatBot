@@ -22,10 +22,10 @@ public class Organizer implements Serializable {
     public String help(Bot bot, String command) {
         return  "Справка по пользованию Time-Manager'ом:\n" +
                 "\nФлаги:\n" +
-                Flag.COMPLETED.getEmoji() + " - Выполнено\n" +
-                Flag.DURING.getEmoji() + " - В процессе\n" +
-                Flag.DEADLINE_IS_COMING.getEmoji() + " - Скоро дедлайн\n" +
-                Flag.FAILED.getEmoji() + " - Потрачено\n" +
+                Flag.COMPLETED.getEmoji() + " - Задание завершено успешно\n" +
+                Flag.DURING.getEmoji() + " - Задание в процессе выполнения\n" +
+                Flag.DEADLINE_IS_COMING.getEmoji() + " - До конца выполнения задания менее трех дней\n" +
+                Flag.FAILED.getEmoji() + " - Задание не выполнено в срок\n" +
                 "\nКоманды:\n" +
                 "* 'add' - добавить задачу, \n" +
                 "* 'all' - показать все задачи, \n" +
