@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,13 +18,23 @@ public class Main extends TelegramLongPollingBot {
     private static final String BOT_NAME = "WhoPi";
     private static final String BOT_TOKEN = "745894584:AAHUqxWITerwmrexJME1_7PA3Hm1e7KQ5Fc";
 
-    public Main() {
+    private static ConcurrentHashMap<Long, Bot> users = new ConcurrentHashMap<>();
 
+    @Override
+    public String getBotUsername() {
+        return BOT_NAME;
     }
 
-    public static void main(String[] args) {
+    @Override
+    public String getBotToken() {
+        return BOT_TOKEN;
+    }
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         if (args[0].equals("console")) {
             Bot bot = new Bot();
+            restore();
+            System.out.println(users.isEmpty());
             bot.run();
         }
         if (args[0].equals("telegram")) {
@@ -36,10 +47,10 @@ public class Main extends TelegramLongPollingBot {
             } catch (TelegramApiRequestException e) {
                 e.printStackTrace();
             }
+        } else {
+            System.out.println("Введите java -jar TheBestChatBot-1.0-SNAPSHOT.jar (console | telegram)");
         }
     }
-    
-    private ConcurrentHashMap<Long, Bot> users = new ConcurrentHashMap<>();
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -63,13 +74,22 @@ public class Main extends TelegramLongPollingBot {
         }
     }
 
-    @Override
-    public String getBotUsername() {
-        return BOT_NAME;
+    public static void save() throws IOException {
+        users.put(23L, new Bot());
+        String filePath = new File("").getAbsolutePath();
+        filePath = filePath.substring(0, filePath.length() - 6);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(
+                new FileOutputStream(filePath+"src/main/resources/users.out"));
+        objectOutputStream.writeObject(users);
+        objectOutputStream.close();
     }
 
-    @Override
-    public String getBotToken() {
-        return BOT_TOKEN;
+    public static void restore() throws IOException, ClassNotFoundException {
+        String filePath = new File("").getAbsolutePath();
+        filePath = filePath.substring(0, filePath.length() - 6);
+        ObjectInputStream objectInputStream = new ObjectInputStream(
+                new FileInputStream(filePath+"src/main/resources/users.out"));
+        ConcurrentHashMap users = (ConcurrentHashMap) objectInputStream.readObject();
+        objectInputStream.close();
     }
 }

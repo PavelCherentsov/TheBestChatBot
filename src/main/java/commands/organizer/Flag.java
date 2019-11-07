@@ -1,6 +1,8 @@
 package commands.organizer;
 
-public enum Flag {
+import java.io.Serializable;
+
+public enum Flag implements Serializable {
     COMPLETED(":white_check_mark:", "Выполнено"),
     DEADLINE_IS_COMING(":sos:", "Скоро дедлайн"),
     DURING(":thinking:", "В процессе"),

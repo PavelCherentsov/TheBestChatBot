@@ -1,6 +1,8 @@
 package bot;
 
-public enum Status {
+import java.io.Serializable;
+
+public enum Status implements Serializable {
     START,
     MENU,
     GAME,

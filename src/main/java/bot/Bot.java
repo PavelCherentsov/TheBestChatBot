@@ -20,18 +20,18 @@ import commands.Start;
 import commands.Study;
 import commands.organizer.Flag;
 import commands.organizer.Organizer;
+import sun.tools.jar.Main;
+
 import java.io.FileWriter;
 
 
 public class Bot implements Serializable {
     public Status statusActive = Status.START;
-    private HashMap<Status, HashMap<String, BiFunction<Bot, String, String>>> dict = new HashMap<>();
+    private transient HashMap<Status, HashMap<String, BiFunction<Bot, String, String>>> dict = new HashMap<>();
 
     private Hangman game = new Hangman();
     private Organizer organizer = new Organizer();
     private Study study = new Study();
-
-    private String smile_emoji = EmojiParser.parseToUnicode("U+1F602");
 
     public Bot() {
         initDict();

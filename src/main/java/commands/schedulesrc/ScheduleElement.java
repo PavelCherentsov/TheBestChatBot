@@ -1,6 +1,8 @@
 package commands.schedulesrc;
 
-public class ScheduleElement {
+import java.io.Serializable;
+
+public class ScheduleElement implements Serializable {
     public Integer number;
     public String time;
     public String subject;
