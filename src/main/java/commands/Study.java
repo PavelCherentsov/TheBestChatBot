@@ -10,9 +10,9 @@ import bot.Bot;
 import bot.Status;
 
 
-public class Study implements Serializable {
+public class Study{
 
-    private List<String> weekDays = new ArrayList<String>() {{
+    private transient List<String> weekDays = new ArrayList<String>() {{
         add("пн");
         add("вт");
         add("ср");

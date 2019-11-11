@@ -1,15 +1,11 @@
 package bot;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
-import com.google.inject.internal.cglib.core.$ClassEmitter;
-import com.vdurmont.emoji.EmojiParser;
 import commands.Echo;
 import commands.Hangman;
 import commands.Help;
@@ -20,20 +16,27 @@ import commands.Start;
 import commands.Study;
 import commands.organizer.Flag;
 import commands.organizer.Organizer;
-import sun.tools.jar.Main;
+import commands.organizer.OrganizerElement;
+import org.telegram.telegrambots.meta.api.objects.games.Game;
 
-import java.io.FileWriter;
 
-
-public class Bot implements Serializable {
+public class Bot {
     public Status statusActive = Status.START;
     private transient HashMap<Status, HashMap<String, BiFunction<Bot, String, String>>> dict = new HashMap<>();
+    public int life;
+    public String wordEncrypted;
+    public String word;
+    public ArrayList<Character> usateLettere;
 
-    private Hangman game = new Hangman();
-    private Organizer organizer = new Organizer();
-    private Study study = new Study();
+    public ArrayList<OrganizerElement> organizer = new ArrayList<>();
+    public OrganizerElement currentTask;
+    public String editType = "";
+    public int n;
+
+    private Study study;
 
     public Bot() {
+        study = new Study();
         initDict();
     }
 
@@ -57,23 +60,23 @@ public class Bot implements Serializable {
         dictionaryMenu.put("выход", Quit::quit);
         dictionaryMenu.put("все", Quit::quit);
         dictionaryMenu.put("всё", Quit::quit);
-        dictionaryMenu.put("game", game::startGame);
-        dictionaryMenu.put("игра", game::startGame);
-        dictionaryMenu.put("виселица", game::startGame);
+        dictionaryMenu.put("game", Hangman::startGame);
+        dictionaryMenu.put("игра", Hangman::startGame);
+        dictionaryMenu.put("виселица", Hangman::startGame);
         dictionaryMenu.put("default", NotUnderstand::notUnderstand);
         dictionaryMenu.put("study", study::mainMenu);
-        dictionaryMenu.put("organizer", organizer::start);
-        dictionaryMenu.put("органайзер", organizer::start);
+        dictionaryMenu.put("organizer", Organizer::start);
+        dictionaryMenu.put("органайзер", Organizer::start);
 
         dict.put(Status.MENU, dictionaryMenu);
 
         HashMap<String, BiFunction<Bot, String, String>> dictionaryGame = new HashMap<>();
-        dictionaryGame.put("help", game::help);
-        dictionaryGame.put("хелп", game::help);
-        dictionaryGame.put("помощь", game::help);
-        dictionaryGame.put("quit", game::quit);
-        dictionaryGame.put("выход", game::quit);
-        dictionaryGame.put("default", game::game);
+        dictionaryGame.put("help", Hangman::help);
+        dictionaryGame.put("хелп", Hangman::help);
+        dictionaryGame.put("помощь", Hangman::help);
+        dictionaryGame.put("quit", Hangman::quit);
+        dictionaryGame.put("выход", Hangman::quit);
+        dictionaryGame.put("default", Hangman::game);
 
         dict.put(Status.GAME, dictionaryGame);
 
@@ -98,58 +101,58 @@ public class Bot implements Serializable {
         dict.put(Status.CLASSES, dictClasses);
 
         HashMap<String, BiFunction<Bot, String, String>> dictOrganizer = new HashMap<>();
-        dictOrganizer.put("default", organizer::showDefault);
-        dictOrganizer.put("add", organizer::add);
-        dictOrganizer.put("адд", organizer::add);
-        dictOrganizer.put("добавить", organizer::add);
-        dictOrganizer.put("all", organizer::all);
-        dictOrganizer.put("все", organizer::all);
-        dictOrganizer.put("список", organizer::all);
-        dictOrganizer.put("completed", organizer::completed);
-        dictOrganizer.put("выполнено", organizer::completed);
-        dictOrganizer.put("quit", organizer::quit);
-        dictOrganizer.put("выход", organizer::quit);
-        dictOrganizer.put("edit", organizer::start_edit);
-        dictOrganizer.put("изменить", organizer::start_edit);
-        dictOrganizer.put("show", organizer::show);
-        dictOrganizer.put("покажи", organizer::show);
-        dictOrganizer.put("показать", organizer::show);
-        dictOrganizer.put("help", organizer::help);
-        dictOrganizer.put("помощь", organizer::help);
-        dictOrganizer.put("хелп", organizer::help);
+        dictOrganizer.put("default", Organizer::showDefault);
+        dictOrganizer.put("add", Organizer::add);
+        dictOrganizer.put("адд", Organizer::add);
+        dictOrganizer.put("добавить", Organizer::add);
+        dictOrganizer.put("all", Organizer::all);
+        dictOrganizer.put("все", Organizer::all);
+        dictOrganizer.put("список", Organizer::all);
+        dictOrganizer.put("completed", Organizer::completed);
+        dictOrganizer.put("выполнено", Organizer::completed);
+        dictOrganizer.put("quit", Organizer::quit);
+        dictOrganizer.put("выход", Organizer::quit);
+        dictOrganizer.put("edit", Organizer::start_edit);
+        dictOrganizer.put("изменить", Organizer::start_edit);
+        dictOrganizer.put("show", Organizer::show);
+        dictOrganizer.put("покажи", Organizer::show);
+        dictOrganizer.put("показать", Organizer::show);
+        dictOrganizer.put("help", Organizer::help);
+        dictOrganizer.put("помощь", Organizer::help);
+        dictOrganizer.put("хелп", Organizer::help);
 
         dict.put(Status.ORGANIZER, dictOrganizer);
 
         HashMap<String, BiFunction<Bot, String, String>> dictOrganizerPush = new HashMap<>();
-        dictOrganizerPush.put("default", organizer::push);
-        dictOrganizerPush.put("quit", organizer::quit);
-        dictOrganizerPush.put("выход", organizer::quit);
-        dictOrganizerPush.put("назад", organizer::back);
-        dictOrganizerPush.put("back", organizer::back);
-        dictOrganizerPush.put("help", organizer::addHelp);
-        dictOrganizerPush.put("хелп", organizer::addHelp);
-        dictOrganizerPush.put("помощь", organizer::addHelp);
+        dictOrganizerPush.put("default", Organizer::push);
+        dictOrganizerPush.put("quit", Organizer::quit);
+        dictOrganizerPush.put("выход", Organizer::quit);
+        dictOrganizerPush.put("назад", Organizer::back);
+        dictOrganizerPush.put("back", Organizer::back);
+        dictOrganizerPush.put("help", Organizer::addHelp);
+        dictOrganizerPush.put("хелп", Organizer::addHelp);
+        dictOrganizerPush.put("помощь", Organizer::addHelp);
 
         dict.put(Status.ORGANIZER_ADD, dictOrganizerPush);
 
         HashMap<String, BiFunction<Bot, String, String>> dictEdit = new HashMap<>();
-        dictEdit.put("default", organizer::edit);
-        dictEdit.put("back", organizer::back);
-        dictEdit.put("date", organizer::edit_questions);
-        dictEdit.put("task", organizer::edit_questions);
-        dictEdit.put("all", organizer::edit_questions);
-        dictEdit.put("назад", organizer::back);
-        dictEdit.put("quit", organizer::quit);
-        dictEdit.put("выход", organizer::quit);
+        dictEdit.put("default", Organizer::edit);
+        dictEdit.put("back", Organizer::back);
+        dictEdit.put("date", Organizer::edit_questions);
+        dictEdit.put("task", Organizer::edit_questions);
+        dictEdit.put("all", Organizer::edit_questions);
+        dictEdit.put("назад", Organizer::back);
+        dictEdit.put("quit", Organizer::quit);
+        dictEdit.put("выход", Organizer::quit);
 
         dict.put(Status.ORGANIZER_EDIT, dictEdit);
 
         HashMap<String, BiFunction<Bot, String, String>> dictShow = new HashMap<>();
-        dictShow.put("default", organizer::showParse);
-        dictShow.put("back", organizer::back);
-        dictShow.put("назад", organizer::back);
-        dictShow.put("quit", organizer::quit);
-        dictShow.put("выход", organizer::quit);
+        dictShow.put("default", Organizer::showParse);
+        dictShow.put("back", Organizer::back);
+        dictShow.put("назад", Organizer::back);
+        dictShow.put("quit", Organizer::quit);
+        dictShow.put("выход", Organizer::quit);
 
         dict.put(Status.ORGANIZER_SHOW, dictShow);
     }
@@ -173,10 +176,10 @@ public class Bot implements Serializable {
         }
     }
 
-    private String processing(String line){
+    private String processing(String line) {
         line = line.replaceAll("<pre>", "");
         line = line.replaceAll("</pre>", "");
-        for (Flag e: Flag.values()) {
+        for (Flag e : Flag.values()) {
             line = line.replaceAll(e.getEmoji(), e.getName());
         }
         return line;

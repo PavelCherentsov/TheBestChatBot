@@ -15,14 +15,25 @@ import java.util.regex.Pattern;
 import bot.Status;
 import bot.Bot;
 
-public class Hangman implements Serializable {
-    private int life;
-    private String word;
-    private String wordEncrypted;
-    private ArrayList<String> words = new ArrayList<String>();
-    private ArrayList<Character> usateLettere = new ArrayList<>();
+public class Hangman {
 
-    private void initWords() {
+    public static transient ArrayList<String> words = new ArrayList<String>(){{
+        add("коллаборация");
+        add("когнитивный");
+        add("трансцендентный");
+        add("априори");
+        add("конгруэнтность");
+        add("уравновеситься");
+        add("трензельный");
+        add("автотележка");
+        add("выпахивание");
+        add("серпоклюв");
+        add("возгреметь");
+        add("солестойкость");
+        add("слабоуздый");
+    }};
+
+    private static void initWords() {
         words.add("коллаборация");
         words.add("когнитивный");
         words.add("трансцендентный");
@@ -38,76 +49,75 @@ public class Hangman implements Serializable {
         words.add("слабоуздый");
     }
 
-    public String startGame(Bot bot, String command) {
+    public static String startGame(Bot bot, String command) {
         bot.statusActive = Status.GAME;
-        initLevels();
         words.clear();
         initWords();
-        word = words.get(new Random().nextInt(words.size() - 1));
-        wordEncrypted = generateEncryptedWord(word);
-        life = 6;
-        usateLettere.clear();
-        return welcome() + "\n" + levels.get(life) + "\n" + wordEncrypted;
+        bot.word = words.get(new Random().nextInt(words.size() - 1));
+        bot.wordEncrypted = generateEncryptedWord(bot.word);
+        bot.life = 6;
+        bot.usateLettere = new ArrayList<Character>();
+        return welcome() + "\n" + levels.get(bot.life) + "\n" + bot.wordEncrypted;
     }
 
-    public String game(Bot bot, String command) {
+    public static String game(Bot bot, String command) {
         if (Pattern.matches(" +", command))
             return help(bot, command);
         if (!checkIsLetter(command))
             return "Введите одну букву русского алфавита";
         String c = command.toLowerCase();
-        if (checkLetterWas(command))
+        if (checkLetterWas(command, bot))
             return "Ты уже называл эту букву";
-        usateLettere.add(c.charAt(0));
-        openLetters(c);
-        if (!wordEncrypted.contains("_")) {
+        bot.usateLettere.add(c.charAt(0));
+        openLetters(c, bot);
+        if (!bot.wordEncrypted.contains("_")) {
             bot.statusActive = Status.MENU;
             return "Поздравляю! Ты выиграл! :)";
         }
-        if (life == 0) {
+        if (bot.life == 0) {
             bot.statusActive = Status.MENU;
-            return levels.get(life) + "\nТы проиграл(\nЯ загадал: " + word;
+            return levels.get(bot.life) + "\nТы проиграл(\nЯ загадал: " + bot.word;
         }
-        return levels.get(life) + "\n" + wordEncrypted;
+        return levels.get(bot.life) + "\n" + bot.wordEncrypted;
 
     }
 
 
 
-    public String help(Bot bot, String command) {
+    public static String help(Bot bot, String command) {
         return "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
                 "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
                 "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'." +
                 " Для выхода из игры: введи 'quit'" +
-                "\n" + levels.get(life) + "\n" + wordEncrypted;
+                "\n" + levels.get(bot.life) + "\n" + bot.wordEncrypted;
     }
 
-    public String quit(Bot bot, String command) {
+    public static String quit(Bot bot, String command) {
         bot.statusActive = Status.MENU;
-        return levels.get(life) + "\n" + "Правильный ответ: " + word + "\n" + "Ты проиграл(";
+        return levels.get(bot.life) + "\n" + "Правильный ответ: " + bot.word + "\n" + "Ты проиграл(";
     }
 
-    private String welcome() {
+    private static String welcome() {
         return "Приветствую тебя в сногсшибательной, в прямом смысле этого слова, игре 'Виселица'.\n" +
                 "Правила очень просты: я загадываю слово, а твоя задача не дать человечку свести \n" +
                 "счеты с жизнью... ой, то есть тебе нужно по буквам слово угадать. У тебя есть \n" +
                 "6 попыток ошибиться. Если тебе нужна помощь, введи 'help'. Удачи!";
     }
 
-    private Boolean checkIsLetter(String command){
+    private static Boolean checkIsLetter(String command){
         return Pattern.matches("[а-яА-Я]{1}", command);
     }
 
-    private Boolean checkLetterWas(String command) {
+    private static Boolean checkLetterWas(String command, Bot bot) {
         String c = command.toLowerCase();
-        for (Character e : usateLettere) {
+        for (Character e : bot.usateLettere) {
             if (e.equals(c.charAt(0)))
                 return true;
         }
         return false;
     }
 
-    private String generateEncryptedWord(String word) {
+    private static String generateEncryptedWord(String word) {
         String result = "_";
         for (int i = 0; i < word.length() - 1; i++) {
             result += " _";
@@ -115,22 +125,20 @@ public class Hangman implements Serializable {
         return result;
     }
 
-    private void openLetters(String c) {
+    private static void openLetters(String c, Bot bot) {
         boolean result = false;
-        for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) == c.charAt(0)) {
-                wordEncrypted = wordEncrypted.substring(0, 2 * i) + c.charAt(0) + wordEncrypted.substring(2 * i + 1);
+        for (int i = 0; i < bot.word.length(); i++) {
+            if (bot.word.charAt(i) == c.charAt(0)) {
+                bot.wordEncrypted = bot.wordEncrypted.substring(0, 2 * i) + c.charAt(0) + bot.wordEncrypted.substring(2 * i + 1);
                 result = true;
             }
         }
         if (!result)
-            life--;
+            bot.life--;
     }
 
-    private ArrayList<String> levels = new ArrayList<String>();
-
-    private void initLevels() {
-        levels.add(0, "<pre>\n" +
+    private static transient ArrayList<String> levels = new ArrayList<String>() {{
+        add(0, "<pre>\n" +
                 "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
@@ -139,7 +147,7 @@ public class Hangman implements Serializable {
                 " / \\    |  \n" +
                 "      -----\n" +
                 "</pre>");
-        levels.add(1, "<pre>\n" +
+        add(1, "<pre>\n" +
                 "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
@@ -148,7 +156,7 @@ public class Hangman implements Serializable {
                 " /      |  \n" +
                 "      -----\n" +
                 "</pre>");
-        levels.add(2, "<pre>\n" +
+        add(2, "<pre>\n" +
                 "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
@@ -157,7 +165,7 @@ public class Hangman implements Serializable {
                 "        |  \n" +
                 "      -----\n" +
                 "</pre>");
-        levels.add(3, "<pre>\n" +
+        add(3, "<pre>\n" +
                 "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
@@ -166,7 +174,7 @@ public class Hangman implements Serializable {
                 "        |  \n" +
                 "      -----\n" +
                 "</pre>");
-        levels.add(4, "<pre>\n" +
+        add(4, "<pre>\n" +
                 "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
@@ -175,7 +183,7 @@ public class Hangman implements Serializable {
                 "        |  \n" +
                 "      -----\n" +
                 "</pre>");
-        levels.add(5, "<pre>\n" +
+        add(5, "<pre>\n" +
                 "  _______  \n" +
                 "  |    \\|  \n" +
                 "  O     |  \n" +
@@ -184,7 +192,7 @@ public class Hangman implements Serializable {
                 "        |  \n" +
                 "      -----\n" +
                 "</pre>");
-        levels.add(6, "<pre>\n" +
+        add(6, "<pre>\n" +
                 "  _______  \n" +
                 "  |    \\|  \n" +
                 "        |  \n" +
@@ -193,5 +201,6 @@ public class Hangman implements Serializable {
                 "        |  \n" +
                 "      -----\n" +
                 "</pre>");
-    }
+    }};
+
 }

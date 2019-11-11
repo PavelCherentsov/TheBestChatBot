@@ -10,17 +10,13 @@ import bot.Status;
 
 
 public class Organizer implements Serializable {
-    private ArrayList<OrganizerElement> list = new ArrayList<>();
-    private OrganizerElement currentTask;
-    private String editType = "";
-    private int n;
 
-    public String showDefault(Bot bot, String command) {
+    public static String showDefault(Bot bot, String command) {
         return "Введи 'help', чтобы узнать все возможности";
     }
 
-    public String help(Bot bot, String command) {
-        return  "Справка по пользованию Time-Manager'ом:\n" +
+    public static String help(Bot bot, String command) {
+        return "Справка по пользованию Time-Manager'ом:\n" +
                 "\nФлаги:\n" +
                 Flag.COMPLETED.getEmoji() + " - Выполнено\n" +
                 Flag.DURING.getEmoji() + " - В процессе\n" +
@@ -35,99 +31,96 @@ public class Organizer implements Serializable {
                 "* 'quit' - выход в меню";
     }
 
-    public String addHelp(Bot bot, String command)
-    {
+    public static String addHelp(Bot bot, String command) {
         return "Введи новое задание: ДД.ММ.ГГГГ task \n'back' - вернуться назад";
     }
 
-    public String start(Bot bot, String command) {
+    public static String start(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER;
         return "Приветствую, я твой личный Time-Manager.";
     }
 
-    public String all(Bot bot, String command) {
+    public static String all(Bot bot, String command) {
         String result = "Все задания:\n<pre>";
         int number = 0;
-        for (OrganizerElement e : list) {
+        for (OrganizerElement e : bot.organizer) {
             if (e.flag != Flag.COMPLETED)
                 e.updateFlag();
-            result = result + "\n" +Integer.toString(number++) + "\t" + e.flag.getEmoji() + "\t\t" +
+            result = result + "\n" + Integer.toString(number++) + "\t" + e.flag.getEmoji() + "\t\t" +
                     getDateFormat(e.date.getTime()) + "\t" + e.task;
         }
         result += "</pre>";
-        if (list.isEmpty())
+        if (bot.organizer.isEmpty())
             return "Заданий пока нет";
         return result;
     }
 
-    public String add(Bot bot, String command) {
+    public static String add(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_ADD;
         return "Введи новое задание: ДД.ММ.ГГГГ ЗАДАНИЕ";
     }
 
-    public String completed(Bot bot, String command) {
+    public static String completed(Bot bot, String command) {
         try {
-        list.get(Integer.parseInt(command.split(" ")[1])).flag = Flag.COMPLETED;
-        return "Выполнено";
-        }
-        catch (IndexOutOfBoundsException e) {
-        return "Неверный номер задания";
-        }
-        catch (Exception e)
-        {
+            bot.organizer.get(Integer.parseInt(command.split(" ")[1])).flag = Flag.COMPLETED;
+            return "Выполнено";
+        } catch (IndexOutOfBoundsException e) {
+            return "Неверный номер задания";
+        } catch (Exception e) {
             return "Неправильный ввод :( \nВведи 'completed [N задачи]'";
         }
     }
 
-    public String push(Bot bot, String command) {
+    public static String push(Bot bot, String command) {
         if (!Pattern.matches("(\\d+\\.){2}\\d+ .+", command))
             return notCorrect();
         String date = command.split(" ")[0];
         String task = command.split("(\\d+\\.){2}\\d+ ")[1];
-        list.add(new OrganizerElement(getDate(date), task));
-        Collections.sort(list);
+        bot.organizer.add(new OrganizerElement(getDate(date), task));
+        Collections.sort(bot.organizer);
         bot.statusActive = Status.ORGANIZER;
         return "Задание добавлено";
     }
 
-    private GregorianCalendar getDate(String date) {
+    private static GregorianCalendar getDate(String date) {
         int day = Integer.parseInt(date.split("\\.")[0]);
         int month = Integer.parseInt(date.split("\\.")[1]) - 1;
         int year = Integer.parseInt(date.split("\\.")[2]);
         return new GregorianCalendar(year, month, day);
     }
 
-    public String show(Bot bot, String command) {
+    public static String show(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_SHOW;
         return "По какому критерию показывать список? Дата или Флаг? (вводи сразу)";
     }
 
-    public String showParse(Bot bot, String command) {
+    public static String showParse(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER;
-        if (list.isEmpty())
+        if (bot.organizer.isEmpty())
             return "Заданий пока нет";
         if (Pattern.matches("([0-9]{2}\\.){2}[0-9]{4}", command))
-            return showByDate(command);
-        if (Pattern.matches("вып.*", command.toLowerCase()))
-            return showByFlag(Flag.COMPLETED);
-        if (Pattern.matches("дед.*", command.toLowerCase()) ||
-                Pattern.matches("ско.*", command.toLowerCase()))
-            return showByFlag(Flag.DEADLINE_IS_COMING);
-        if (Pattern.matches("в п.*", command.toLowerCase()) ||
-                Pattern.matches("про.*", command.toLowerCase()))
-            return showByFlag(Flag.DURING);
-        if (Pattern.matches("пот.*", command.toLowerCase()))
-            return showByFlag(Flag.FAILED);
+            return showByDate(command, bot);
+        Flag flag = getFlag(command);
+        if (flag != null)
+            return showByFlag(flag, bot);
         return notCorrect();
     }
 
-    public String notCorrect(){
+    private static Flag getFlag(String command) {
+        for (Flag flag : Flag.values()) {
+            if (Pattern.matches(flag.getPattern(), command.toLowerCase()))
+                return flag;
+        }
+        return null;
+    }
+
+    public static String notCorrect() {
         return "Я тебя не понял, напиши 'help' для помощи";
     }
 
-    public String showByDate(String command) {
+    public static String showByDate(String command, Bot bot) {
         String result = "На " + command + " нужно:\n<pre>";
-        for (OrganizerElement e : list) {
+        for (OrganizerElement e : bot.organizer) {
             if (e.flag != Flag.COMPLETED && e.date.compareTo(getDate(command)) == 0)
                 result = result + "\n" + e.task;
         }
@@ -135,53 +128,49 @@ public class Organizer implements Serializable {
         return result;
     }
 
-    public String showByFlag(Flag flag) {
+    public static String showByFlag(Flag flag, Bot bot) {
         String result = "<pre>" + flag.getName() + ":\n";
-        for (OrganizerElement e : list) {
+        for (OrganizerElement e : bot.organizer) {
             if (e.flag == flag)
-                result = result + "\n" + getDateFormat(e.date.getTime()) + "\t\t" + e.task ;
+                result = result + "\n" + getDateFormat(e.date.getTime()) + "\t\t" + e.task;
         }
         result += "</pre>";
         return result;
     }
 
-    public String back(Bot bot, String command) {
+    public static String back(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER;
-        editType = "";
+        bot.editType = "";
         return "Отмена записи";
     }
 
-    public String quit(Bot bot, String command) {
+    public static String quit(Bot bot, String command) {
         bot.statusActive = Status.MENU;
         return "Выход в главное меню";
     }
 
-    private String getDateFormat(Date date) {
+    private static String getDateFormat(Date date) {
         return new SimpleDateFormat("dd.MM.y").format(date);
     }
 
-    public String start_edit(Bot bot, String command) {
+    public static String start_edit(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_EDIT;
         return "Введи номер задания, которое надо изменить";
     }
 
-    public String edit(Bot bot, String command)
-    {
-        if (list.size() == 0)
-        {
+    public static String edit(Bot bot, String command) {
+        if (bot.organizer.size() == 0) {
             bot.statusActive = Status.ORGANIZER;
             return "Нет заданий для редактирования";
         }
 
-        if (!editType.equals(""))
-        {
+        if (!bot.editType.equals("")) {
             return edit_choice(bot, command);
         }
-        try
-        {
-            OrganizerElement task = list.get(Integer.parseInt(command));
-            n = Integer.parseInt(command);
-            currentTask = task;
+        try {
+            OrganizerElement task = bot.organizer.get(Integer.parseInt(command));
+            bot.n = Integer.parseInt(command);
+            bot.currentTask = task;
             return "Что меняем? Дату - date, задание - task, дату и задание - all";
         } catch (NumberFormatException e) {
             return "Неверный ввод. Введи номер задания или 'back', чтобы вернуться назад";
@@ -190,11 +179,10 @@ public class Organizer implements Serializable {
         }
     }
 
-    public String edit_questions(Bot bot, String command)
-    {
-        String[] goodCommands = new String[] {"date", "task", "all"};
+    public static String edit_questions(Bot bot, String command) {
+        String[] goodCommands = new String[]{"date", "task", "all"};
         if (Arrays.asList(goodCommands).contains(command))
-            editType = command;
+            bot.editType = command;
         HashMap<String, String> questions = new HashMap<>();
         questions.put("date", "Введи дату в формате ДД.ММ.ГГГГ");
         questions.put("task", "Введи таск");
@@ -203,33 +191,30 @@ public class Organizer implements Serializable {
         return questions.getOrDefault(command, questions.get("default"));
     }
 
-    private String edit_choice(Bot bot, String command)
-    {
+    private static String edit_choice(Bot bot, String command) {
         String result = "";
         try {
-            switch (editType) {
+            switch (bot.editType) {
                 case ("date"):
-                    currentTask.changeDate(getDate(command.split(" ")[0]));
-                    currentTask.updateFlag();
+                    bot.currentTask.changeDate(getDate(command.split(" ")[0]));
+                    bot.currentTask.updateFlag();
                     result += "Дата изменена";
                     break;
                 case ("task"):
-                    currentTask.changeTask(command);
+                    bot.currentTask.changeTask(command);
                     result += "Задание изменено";
                     break;
                 case ("all"):
                     String task = command.split("([0-9]{2}\\.){2}\\.[0-9]{4} ")[1];
-                    list.set(n, new OrganizerElement(getDate(command.split(" ")[0]), task));
-                    n = -1;
+                    bot.organizer.set(bot.n, new OrganizerElement(getDate(command.split(" ")[0]), task));
+                    bot.n = -1;
                     result += "Задача изменена";
                     break;
             }
-            editType = "";
+            bot.editType = "";
             bot.statusActive = Status.ORGANIZER;
             return result;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return "Неверный ввод. Напиши еще раз или пиши 'back', чтобы вернуться назад";
         }
     }

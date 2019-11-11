@@ -24,21 +24,23 @@ public class OrganizerElement implements Comparable<OrganizerElement>, Serializa
     }
 
     public void updateFlag() {
-        boolean changed = false;
-        GregorianCalendar d = new GregorianCalendar();
-        d.add(Calendar.DAY_OF_MONTH, +3);
-        if (date.before(d)) {
-            flag = Flag.DEADLINE_IS_COMING;
-            changed = true;
-        }
-        d.add(Calendar.DAY_OF_MONTH, -4);
-        if (date.before(d)) {
-            flag = Flag.FAILED;
-            changed = true;
-        }
+        if (flag != Flag.COMPLETED) {
+            boolean changed = false;
+            GregorianCalendar d = new GregorianCalendar();
+            d.add(Calendar.DAY_OF_MONTH, +3);
+            if (date.before(d)) {
+                flag = Flag.DEADLINE_IS_COMING;
+                changed = true;
+            }
+            d.add(Calendar.DAY_OF_MONTH, -4);
+            if (date.before(d)) {
+                flag = Flag.FAILED;
+                changed = true;
+            }
 
-        if (!changed) {
-            flag = Flag.DURING;
+            if (!changed) {
+                flag = Flag.DURING;
+            }
         }
 
     }
