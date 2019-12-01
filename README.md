@@ -16,10 +16,7 @@
 ## Требования
 * Java 11
 
-## Состав
-* Консольная версия: `modules/console.py`
-* Модули: `modules/components/`
-* Тесты: `tests/` 
+## Состав 
 
 ## Справка
 Справка по запуску: `java -jar T.java -h`
