@@ -29,6 +29,7 @@ public class Bot {
     public ArrayList<Character> usateLettere;
 
     public ArrayList<OrganizerElement> organizer = new ArrayList<>();
+    public HashMap<String, HashMap<Integer, Boolean>> deadlines = new HashMap<>();
     public OrganizerElement currentTask;
     public String editType = "";
     public int n;
@@ -120,6 +121,7 @@ public class Bot {
         dictOrganizer.put("help", Organizer::help);
         dictOrganizer.put("помощь", Organizer::help);
         dictOrganizer.put("хелп", Organizer::help);
+        dictOrganizer.put("check", Organizer::checkDeadlines);
 
         dict.put(Status.ORGANIZER, dictOrganizer);
 

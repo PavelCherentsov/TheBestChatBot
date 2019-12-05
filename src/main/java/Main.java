@@ -124,4 +124,9 @@ public class Main extends TelegramLongPollingBot {
         users = gson.fromJson(json, collectionType);
         reader.close();
     }
+
+    public static String checkDeadlines()
+    {
+        return "";
+    }
 }

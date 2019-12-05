@@ -55,6 +55,70 @@ public class Organizer implements Serializable {
         return result;
     }
 
+    public static String checkDeadlines(Bot bot, String command)
+    {
+        String output = "";
+        GregorianCalendar now = new GregorianCalendar();
+        for (OrganizerElement e : bot.organizer)
+        {
+            String key = e.date.toString() + e.task;
+            updateValues(key, bot);
+            if (now.compareTo(e.date) == -1 && e.flag == Flag.DEADLINE_IS_COMING)
+            {
+                Integer timeToSend = checkIfSend(bot, key, e);
+                if (timeToSend != -1)
+                {
+                    output += "DEADLINE IS COMING";
+                }
+                output += e.date.getTimeInMillis() + " ";
+                output += now.getTimeInMillis() + " ";
+            }
+            output += String.valueOf(now.compareTo(e.date)) + '\n';
+        }
+        return output;
+    }
+
+    private static String getDeadlineMessage(Integer key)
+    {
+        HashMap<Integer, String> answers = new HashMap<>();
+        answers.put(86400000, "До дедлайна 24 часа! Не забудь про задание ");
+        answers.put(7200000, "Осталось 2 часа чтобы выполнить ");
+        answers.put(300000, "Всего 5 минут до дедлайна! Ты уже сделал ");
+        answers.put(0, "Упс! Задача просрочена :(");
+        return "";
+    }
+
+    private static Integer checkIfSend(Bot bot, String key, OrganizerElement e)
+    {
+        GregorianCalendar now = new GregorianCalendar();
+        Long curTimeMs = now.getTimeInMillis();
+        Long taskTimeMs = e.date.getTimeInMillis();
+        Integer eps = 10000;
+        for (Integer time : bot.deadlines.get(key).keySet())
+        {
+            Boolean shouldSend = Math.abs(taskTimeMs - curTimeMs + time) < eps;
+            if (!bot.deadlines.get(key).get(time) && shouldSend)
+            {
+                bot.deadlines.get(key).put(time, true);
+                return time;
+            }
+        }
+        return -1;
+    }
+
+    private static void updateValues(String key, Bot bot)
+    {
+        if (!bot.deadlines.containsKey(key))
+        {
+            HashMap<Integer, Boolean> times = new HashMap<>();
+            times.put(86400000, false);
+            times.put(7200000, false);
+            times.put(300000, false);
+            times.put(0, false);
+            bot.deadlines.put(key, times);
+        }
+    }
+
     public static String add(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_ADD;
         return "Введи новое задание: ДД.ММ.ГГГГ ЗАДАНИЕ";
@@ -205,7 +269,8 @@ public class Organizer implements Serializable {
                     result += "Задание изменено";
                     break;
                 case ("all"):
-                    String task = command.split("([0-9]{2}\\.){2}\\.[0-9]{4} ")[1];
+                    // String task = command.split("([0-9]{2}\\.){2}\\.[0-9]{4} ")[1];
+                    String task = command.substring(11);
                     bot.organizer.set(bot.n, new OrganizerElement(getDate(command.split(" ")[0]), task));
                     bot.n = -1;
                     result += "Задача изменена";
