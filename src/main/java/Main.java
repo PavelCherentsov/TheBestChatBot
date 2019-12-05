@@ -39,7 +39,7 @@ public class Main extends TelegramLongPollingBot {
         return BOT_TOKEN;
     }
 
-    public Main bot;
+    public static Main bot;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         if (args[0].equals("console")) {
@@ -56,12 +56,12 @@ public class Main extends TelegramLongPollingBot {
         if (args[0].equals("telegram")) {
             ApiContextInitializer.init();
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-            Main bot = new Main();
+            bot = new Main();
             restore();
             try {
                 telegramBotsApi.registerBot(bot);
-                //Thread t = new chreak();
-                //t.start();
+                Thread t = new chreak();
+                t.start();
             } catch (TelegramApiRequestException e) {
                 e.printStackTrace();
             }
@@ -70,7 +70,7 @@ public class Main extends TelegramLongPollingBot {
         }
     }
 
-    public  class chreak extends Thread{
+    public static class chreak extends Thread{
         @Override
         public void run() {
             while (true){
@@ -80,7 +80,7 @@ public class Main extends TelegramLongPollingBot {
                         SendMessage sendMessage = new SendMessage().setChatId(a);
                         sendMessage.setText(res);
                         try {
-                            execute(sendMessage);
+                            bot.execute(sendMessage);
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
                         }

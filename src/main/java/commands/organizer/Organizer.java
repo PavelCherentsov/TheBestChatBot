@@ -70,7 +70,7 @@ public class Organizer implements Serializable {
                 Integer timeToSend = checkIfSend(bot, key, e);
                 if (timeToSend != -1)
                 {
-                    output += getDeadlineMessage1(timeToSend) + e.task;
+                    output += getDeadlineMessage1(timeToSend) + e.task + '\n';
                 }
             }
             else if (e.flag == Flag.COMPLETED || e.flag == Flag.FAILED)
@@ -90,10 +90,9 @@ public class Organizer implements Serializable {
             if (e.flag == Flag.DEADLINE_IS_COMING)
             {
                 e.date = now;
-                return "Время изменено";
             }
         }
-        return "Время не изменено";
+        return "Время изменено";
     }
 
     private static String getDeadlineMessage(Integer key)
@@ -124,7 +123,7 @@ public class Organizer implements Serializable {
         Integer eps = 10000;
         for (Integer time : bot.deadlines.get(key).keySet())
         {
-            Boolean shouldSend = Math.abs(taskTimeMs - curTimeMs + time) < eps;
+            Boolean shouldSend = Math.abs(taskTimeMs - curTimeMs - time) < eps;
             if (!bot.deadlines.get(key).get(time) && shouldSend)
             {
                 bot.deadlines.get(key).put(time, true);
