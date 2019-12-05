@@ -1,8 +1,10 @@
 import bot.Bot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.inject.internal.asm.$AnnotationVisitor;
 import com.vdurmont.emoji.EmojiParser;
 import commands.organizer.Flag;
+import commands.organizer.Organizer;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -15,6 +17,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,6 +39,8 @@ public class Main extends TelegramLongPollingBot {
         return BOT_TOKEN;
     }
 
+    public Main bot;
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         if (args[0].equals("console")) {
             restore();
@@ -54,12 +60,38 @@ public class Main extends TelegramLongPollingBot {
             restore();
             try {
                 telegramBotsApi.registerBot(bot);
-
+                //Thread t = new chreak();
+                //t.start();
             } catch (TelegramApiRequestException e) {
                 e.printStackTrace();
             }
         } else {
             System.out.println("Введите java -jar TheBestChatBot-1.0-SNAPSHOT.jar (console | telegram)");
+        }
+    }
+
+    public  class chreak extends Thread{
+        @Override
+        public void run() {
+            while (true){
+                for (Long a : users.keySet()) {
+                    String res = Organizer.checkDeadlines(users.get(a), "");
+                    if (!res.equals("")) {
+                        SendMessage sendMessage = new SendMessage().setChatId(a);
+                        sendMessage.setText(res);
+                        try {
+                            execute(sendMessage);
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -79,7 +111,7 @@ public class Main extends TelegramLongPollingBot {
             result = EmojiParser.parseToUnicode(result);
             sendMessage.setText(result);
             sendMessage.setParseMode(ParseMode.HTML);
-            execute(sendMessage);
+            bot.execute(sendMessage);
             try {
                 save();
             } catch (IOException e) {
