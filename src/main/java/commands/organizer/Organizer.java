@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import bot.Bot;
 import bot.Status;
 
+import javax.swing.event.CaretListener;
+
 
 public class Organizer implements Serializable {
 
@@ -62,13 +64,13 @@ public class Organizer implements Serializable {
         for (OrganizerElement e : bot.organizer)
         {
             String key = e.date.toString() + e.task;
-            updateValues(key, bot);
+            updateValues1(key, bot);
             if (now.compareTo(e.date) == -1 && e.flag == Flag.DEADLINE_IS_COMING)
             {
                 Integer timeToSend = checkIfSend(bot, key, e);
                 if (timeToSend != -1)
                 {
-                    output += getDeadlineMessage(timeToSend) + e.task;
+                    output += getDeadlineMessage1(timeToSend) + e.task;
                 }
             }
             else if (e.flag == Flag.COMPLETED || e.flag == Flag.FAILED)
@@ -79,12 +81,37 @@ public class Organizer implements Serializable {
         return output;
     }
 
+    public static String changeTime(Bot bot, String command)
+    {
+        GregorianCalendar now = new GregorianCalendar();
+        now.add(Calendar.MINUTE, 4);
+        for (OrganizerElement e : bot.organizer)
+        {
+            if (e.flag == Flag.DEADLINE_IS_COMING)
+            {
+                e.date = now;
+                return "Время изменено";
+            }
+        }
+        return "Время не изменено";
+    }
+
     private static String getDeadlineMessage(Integer key)
     {
         HashMap<Integer, String> answers = new HashMap<>();
         answers.put(86400000, "До дедлайна 24 часа! Не забудь про задание ");
         answers.put(7200000, "Осталось 2 часа чтобы выполнить ");
         answers.put(300000, "Всего 5 минут до дедлайна по задаче ");
+        answers.put(0, "Упс! Задача просрочена :( ");
+        return answers.get(key);
+    }
+
+    private static String getDeadlineMessage1(Integer key)
+    {
+        HashMap<Integer, String> answers = new HashMap<>();
+        answers.put(180000, "До дедлайна 3 минуты! Не забудь про задание ");
+        answers.put(120000, "Осталось 2 минуты чтобы выполнить ");
+        answers.put(60000, "Всего 1 минута до дедлайна по задаче ");
         answers.put(0, "Упс! Задача просрочена :( ");
         return answers.get(key);
     }
@@ -105,6 +132,19 @@ public class Organizer implements Serializable {
             }
         }
         return -1;
+    }
+
+    private static void updateValues1(String key, Bot bot)
+    {
+        if (!bot.deadlines.containsKey(key))
+        {
+            HashMap<Integer, Boolean> times = new HashMap<>();
+            times.put(180000, false);
+            times.put(120000, false);
+            times.put(60000, false);
+            times.put(0, false);
+            bot.deadlines.put(key, times);
+        }
     }
 
     private static void updateValues(String key, Bot bot)
