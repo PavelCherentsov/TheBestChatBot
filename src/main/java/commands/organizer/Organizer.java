@@ -68,12 +68,13 @@ public class Organizer implements Serializable {
                 Integer timeToSend = checkIfSend(bot, key, e);
                 if (timeToSend != -1)
                 {
-                    output += "DEADLINE IS COMING";
+                    output += getDeadlineMessage(timeToSend) + e.task;
                 }
-                output += e.date.getTimeInMillis() + " ";
-                output += now.getTimeInMillis() + " ";
             }
-            output += String.valueOf(now.compareTo(e.date)) + '\n';
+            else if (e.flag == Flag.COMPLETED || e.flag == Flag.FAILED)
+            {
+                bot.deadlines.remove(key);
+            }
         }
         return output;
     }
@@ -83,9 +84,9 @@ public class Organizer implements Serializable {
         HashMap<Integer, String> answers = new HashMap<>();
         answers.put(86400000, "До дедлайна 24 часа! Не забудь про задание ");
         answers.put(7200000, "Осталось 2 часа чтобы выполнить ");
-        answers.put(300000, "Всего 5 минут до дедлайна! Ты уже сделал ");
-        answers.put(0, "Упс! Задача просрочена :(");
-        return "";
+        answers.put(300000, "Всего 5 минут до дедлайна по задаче ");
+        answers.put(0, "Упс! Задача просрочена :( ");
+        return answers.get(key);
     }
 
     private static Integer checkIfSend(Bot bot, String key, OrganizerElement e)
@@ -118,6 +119,7 @@ public class Organizer implements Serializable {
             bot.deadlines.put(key, times);
         }
     }
+
 
     public static String add(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_ADD;

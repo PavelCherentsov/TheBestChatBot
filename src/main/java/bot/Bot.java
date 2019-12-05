@@ -121,7 +121,6 @@ public class Bot {
         dictOrganizer.put("help", Organizer::help);
         dictOrganizer.put("помощь", Organizer::help);
         dictOrganizer.put("хелп", Organizer::help);
-        dictOrganizer.put("check", Organizer::checkDeadlines);
 
         dict.put(Status.ORGANIZER, dictOrganizer);
 
