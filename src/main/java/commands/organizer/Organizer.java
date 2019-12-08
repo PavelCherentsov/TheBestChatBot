@@ -8,9 +8,6 @@ import java.util.regex.Pattern;
 import bot.Bot;
 import bot.Status;
 
-import javax.swing.event.CaretListener;
-
-
 public class Organizer implements Serializable {
 
     public static String showDefault(Bot bot, String command) {
@@ -57,46 +54,36 @@ public class Organizer implements Serializable {
         return result;
     }
 
-    public static String checkDeadlines(Bot bot, String command)
-    {
+    public static String checkDeadlines(Bot bot, String command) {
         String output = "";
         GregorianCalendar now = new GregorianCalendar();
-        for (OrganizerElement e : bot.organizer)
-        {
+        for (OrganizerElement e : bot.organizer) {
             String key = e.date.toString() + e.task;
             updateValues1(key, bot);
-            if (now.compareTo(e.date) == -1 && e.flag == Flag.DEADLINE_IS_COMING)
-            {
+            if (now.compareTo(e.date) == -1 && e.flag == Flag.DEADLINE_IS_COMING) {
                 Integer timeToSend = checkIfSend(bot, key, e);
-                if (timeToSend != -1)
-                {
+                if (timeToSend != -1) {
                     output += getDeadlineMessage1(timeToSend) + e.task + '\n';
                 }
-            }
-            else if (e.flag == Flag.COMPLETED || e.flag == Flag.FAILED)
-            {
+            } else if (e.flag == Flag.COMPLETED || e.flag == Flag.FAILED) {
                 bot.deadlines.remove(key);
             }
         }
         return output;
     }
 
-    public static String changeTime(Bot bot, String command)
-    {
+    public static String changeTime(Bot bot, String command) {
         GregorianCalendar now = new GregorianCalendar();
         now.add(Calendar.MINUTE, 4);
-        for (OrganizerElement e : bot.organizer)
-        {
-            if (e.flag == Flag.DEADLINE_IS_COMING)
-            {
+        for (OrganizerElement e : bot.organizer) {
+            if (e.flag == Flag.DEADLINE_IS_COMING) {
                 e.date = now;
             }
         }
         return "Время изменено";
     }
 
-    private static String getDeadlineMessage(Integer key)
-    {
+    private static String getDeadlineMessage(Integer key) {
         HashMap<Integer, String> answers = new HashMap<>();
         answers.put(86400000, "До дедлайна 24 часа! Не забудь про задание ");
         answers.put(7200000, "Осталось 2 часа чтобы выполнить ");
@@ -105,8 +92,7 @@ public class Organizer implements Serializable {
         return answers.get(key);
     }
 
-    private static String getDeadlineMessage1(Integer key)
-    {
+    private static String getDeadlineMessage1(Integer key) {
         HashMap<Integer, String> answers = new HashMap<>();
         answers.put(180000, "До дедлайна 3 минуты! Не забудь про задание ");
         answers.put(120000, "Осталось 2 минуты чтобы выполнить ");
@@ -115,17 +101,14 @@ public class Organizer implements Serializable {
         return answers.get(key);
     }
 
-    private static Integer checkIfSend(Bot bot, String key, OrganizerElement e)
-    {
+    private static Integer checkIfSend(Bot bot, String key, OrganizerElement e) {
         GregorianCalendar now = new GregorianCalendar();
         Long curTimeMs = now.getTimeInMillis();
         Long taskTimeMs = e.date.getTimeInMillis();
         Integer eps = 10000;
-        for (Integer time : bot.deadlines.get(key).keySet())
-        {
+        for (Integer time : bot.deadlines.get(key).keySet()) {
             Boolean shouldSend = Math.abs(taskTimeMs - curTimeMs - time) < eps;
-            if (!bot.deadlines.get(key).get(time) && shouldSend)
-            {
+            if (!bot.deadlines.get(key).get(time) && shouldSend) {
                 bot.deadlines.get(key).put(time, true);
                 return time;
             }
@@ -133,10 +116,8 @@ public class Organizer implements Serializable {
         return -1;
     }
 
-    private static void updateValues1(String key, Bot bot)
-    {
-        if (!bot.deadlines.containsKey(key))
-        {
+    private static void updateValues1(String key, Bot bot) {
+        if (!bot.deadlines.containsKey(key)) {
             HashMap<Integer, Boolean> times = new HashMap<>();
             times.put(180000, false);
             times.put(120000, false);
@@ -146,10 +127,8 @@ public class Organizer implements Serializable {
         }
     }
 
-    private static void updateValues(String key, Bot bot)
-    {
-        if (!bot.deadlines.containsKey(key))
-        {
+    private static void updateValues(String key, Bot bot) {
+        if (!bot.deadlines.containsKey(key)) {
             HashMap<Integer, Boolean> times = new HashMap<>();
             times.put(86400000, false);
             times.put(7200000, false);

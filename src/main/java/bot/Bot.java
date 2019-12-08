@@ -3,6 +3,8 @@ package bot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
@@ -17,7 +19,6 @@ import commands.Study;
 import commands.organizer.Flag;
 import commands.organizer.Organizer;
 import commands.organizer.OrganizerElement;
-import org.telegram.telegrambots.meta.api.objects.games.Game;
 
 
 public class Bot {
@@ -28,8 +29,8 @@ public class Bot {
     public String word;
     public ArrayList<Character> usateLettere;
 
-    public ArrayList<OrganizerElement> organizer = new ArrayList<>();
-    public HashMap<String, HashMap<Integer, Boolean>> deadlines = new HashMap<>();
+    public CopyOnWriteArrayList<OrganizerElement> organizer = new CopyOnWriteArrayList<>();
+    public ConcurrentHashMap<String, HashMap<Integer, Boolean>> deadlines = new ConcurrentHashMap<>();
     public OrganizerElement currentTask;
     public String editType = "";
     public int n;
