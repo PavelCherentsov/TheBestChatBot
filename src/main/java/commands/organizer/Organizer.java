@@ -60,11 +60,11 @@ public class Organizer implements Serializable {
         GregorianCalendar now = new GregorianCalendar();
         for (OrganizerElement e : bot.organizer) {
             String key = e.date.toString() + e.task;
-            updateValues1(key, bot);
+            updateValues(key, bot);
             if (now.compareTo(e.date) == -1 && e.flag == Flag.DEADLINE_IS_COMING) {
                 Integer timeToSend = checkIfSend(bot, key, e);
                 if (timeToSend != -1) {
-                    output += getDeadlineMessage1(timeToSend) + e.task + '\n';
+                    output += getDeadlineMessage(timeToSend) + e.task + '\n';
                 }
             } else if (e.flag == Flag.COMPLETED || e.flag == Flag.FAILED) {
                 bot.deadlines.remove(key);
@@ -93,18 +93,19 @@ public class Organizer implements Serializable {
         return answers.get(key);
     }
 
-    private static String getDeadlineMessage1(Integer key) {
-        HashMap<Integer, String> answers = new HashMap<>();
-        answers.put(180000, "До дедлайна 3 минуты! Не забудь про задание ");
-        answers.put(120000, "Осталось 2 минуты, чтобы выполнить ");
-        answers.put(60000, "Всего 1 минута до дедлайна по задаче ");
-        answers.put(0, "Упс! Задача просрочена :( ");
-        return answers.get(key);
-    }
 
     private static Integer checkIfSend(Bot bot, String key, OrganizerElement e) {
         GregorianCalendar now = new GregorianCalendar();
-        Long curTimeMs = now.getTimeInMillis();
+        Long curTimeMs;
+        if (bot.test) {
+            now = getSetTime(bot.time);
+            curTimeMs = now.getTimeInMillis() + bot.count * 10000;
+            bot.count += 1;
+        }
+        else {
+            curTimeMs = now.getTimeInMillis();
+        }
+
         Long taskTimeMs = e.date.getTimeInMillis();
         Integer eps = 10000;
         for (Integer time : bot.deadlines.get(key).keySet()) {
@@ -117,16 +118,6 @@ public class Organizer implements Serializable {
         return -1;
     }
 
-    private static void updateValues1(String key, Bot bot) {
-        if (!bot.deadlines.containsKey(key)) {
-            HashMap<Integer, Boolean> times = new HashMap<>();
-            times.put(180000, false);
-            times.put(120000, false);
-            times.put(60000, false);
-            times.put(0, false);
-            bot.deadlines.put(key, times);
-        }
-    }
 
     private static void updateValues(String key, Bot bot) {
         if (!bot.deadlines.containsKey(key)) {
@@ -182,6 +173,20 @@ public class Organizer implements Serializable {
         int month = Integer.parseInt(date.split("\\.")[1]) - 1;
         int year = Integer.parseInt(date.split("\\.")[2]);
         return new GregorianCalendar(year, month, day);
+    }
+
+
+
+    private static GregorianCalendar getSetTime(String time){
+        GregorianCalendar now = new GregorianCalendar();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH);
+        int day = now.get(Calendar.DAY_OF_MONTH);
+
+        int hour = Integer.parseInt(time.split("\\:")[0]);
+        int minute = Integer.parseInt(time.split("\\:")[1]);
+        int second = Integer.parseInt(time.split("\\:")[2]);
+        return new GregorianCalendar(year, month, day, hour, minute, second);
     }
 
     public static String show(Bot bot, String command) {
@@ -248,7 +253,7 @@ public class Organizer implements Serializable {
         return new SimpleDateFormat("dd.MM.y").format(date);
     }
 
-    public static String start_edit(Bot bot, String command) {
+    public static String startEdit(Bot bot, String command) {
         bot.statusActive = Status.ORGANIZER_EDIT;
         return "Введи номер задания, которое надо изменить";
     }
@@ -260,7 +265,7 @@ public class Organizer implements Serializable {
         }
 
         if (!bot.editType.equals("")) {
-            return edit_choice(bot, command);
+            return editChoice(bot, command);
         }
         try {
             OrganizerElement task = bot.organizer.get(Integer.parseInt(command));
@@ -274,7 +279,7 @@ public class Organizer implements Serializable {
         }
     }
 
-    public static String edit_questions(Bot bot, String command) {
+    public static String editQuestions(Bot bot, String command) {
         String[] goodCommands = new String[]{"date", "task", "all"};
         if (Arrays.asList(goodCommands).contains(command))
             bot.editType = command;
@@ -286,7 +291,7 @@ public class Organizer implements Serializable {
         return questions.getOrDefault(command, questions.get("default"));
     }
 
-    private static String edit_choice(Bot bot, String command) {
+    private static String editChoice(Bot bot, String command) {
         String result = "";
         try {
             switch (bot.editType) {
@@ -300,7 +305,6 @@ public class Organizer implements Serializable {
                     result += "Задание изменено";
                     break;
                 case ("all"):
-                    // String task = command.split("([0-9]{2}\\.){2}\\.[0-9]{4} ")[1];
                     String task = command.substring(11);
                     bot.organizer.set(bot.n, new OrganizerElement(getDate(command.split(" ")[0]), task));
                     bot.n = -1;

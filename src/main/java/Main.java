@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Main extends TelegramLongPollingBot {
     private static String BOT_NAME = "WhoPi";
     private static String BOT_TOKEN = "";
+    private static String time;
 
     private static ConcurrentHashMap<Long, Bot> users = new ConcurrentHashMap<>();
 
@@ -58,6 +59,9 @@ public class Main extends TelegramLongPollingBot {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
             bot = new Main();
             restore();
+            if (args[1].equals("test")){
+                time = args[2];
+            }
             try {
                 telegramBotsApi.registerBot(bot);
                 Thread t = new chreak();
@@ -75,6 +79,13 @@ public class Main extends TelegramLongPollingBot {
         public void run() {
             while (true) {
                 for (Long a : users.keySet()) {
+                    if (!time.equals("")){
+                        users.get(a).test = true;
+                        users.get(a).time = time;
+                    }
+                    else {
+                        users.get(a).test = false;
+                    }
                     String res = Organizer.checkDeadlines(users.get(a), "");
                     if (!res.equals("")) {
                         SendMessage sendMessage = new SendMessage().setChatId(a);
@@ -87,7 +98,7 @@ public class Main extends TelegramLongPollingBot {
                     }
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -106,6 +117,7 @@ public class Main extends TelegramLongPollingBot {
             if (!(users.containsKey(chatId))) {
                 users.put(chatId, new Bot());
             }
+
             result = users.get(chatId).getAnswer(message);
             //users.computeIfAbsent()
             result = EmojiParser.parseToUnicode(result);
@@ -155,9 +167,5 @@ public class Main extends TelegramLongPollingBot {
         }.getType();
         users = gson.fromJson(json, collectionType);
         reader.close();
-    }
-
-    public static String checkDeadlines() {
-        return "";
     }
 }

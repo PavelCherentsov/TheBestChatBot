@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
@@ -36,6 +37,10 @@ public class Bot {
     public int n;
 
     private Study study;
+
+    public Boolean test = false;
+    public String time;
+    public Integer count = 0;
 
     public Bot() {
         study = new Study();
@@ -114,8 +119,8 @@ public class Bot {
         dictOrganizer.put("выполнено", Organizer::completed);
         dictOrganizer.put("quit", Organizer::quit);
         dictOrganizer.put("выход", Organizer::quit);
-        dictOrganizer.put("edit", Organizer::start_edit);
-        dictOrganizer.put("изменить", Organizer::start_edit);
+        dictOrganizer.put("edit", Organizer::startEdit);
+        dictOrganizer.put("изменить", Organizer::startEdit);
         dictOrganizer.put("show", Organizer::show);
         dictOrganizer.put("покажи", Organizer::show);
         dictOrganizer.put("показать", Organizer::show);
@@ -143,9 +148,9 @@ public class Bot {
         HashMap<String, BiFunction<Bot, String, String>> dictEdit = new HashMap<>();
         dictEdit.put("default", Organizer::edit);
         dictEdit.put("back", Organizer::back);
-        dictEdit.put("date", Organizer::edit_questions);
-        dictEdit.put("task", Organizer::edit_questions);
-        dictEdit.put("all", Organizer::edit_questions);
+        dictEdit.put("date", Organizer::editQuestions);
+        dictEdit.put("task", Organizer::editQuestions);
+        dictEdit.put("all", Organizer::editQuestions);
         dictEdit.put("назад", Organizer::back);
         dictEdit.put("quit", Organizer::quit);
         dictEdit.put("выход", Organizer::quit);
