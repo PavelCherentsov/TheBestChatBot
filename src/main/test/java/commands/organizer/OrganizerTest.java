@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class OrganizerTest {
+public class OrganizerTest {
     private Bot bot = new Bot();
 
     @Test
-    void testStart() {
+    public void testStart() {
         bot.statusActive = Status.MENU;
         bot.getAnswer("organizer");
         Assert.assertEquals(bot.statusActive, Status.ORGANIZER);

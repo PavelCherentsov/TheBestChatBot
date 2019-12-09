@@ -30,6 +30,7 @@ public class Organizer implements Serializable {
                 "* 'edit' - редактировать,\n" +
                 "* 'show' - показать задачи по приоритетам или дате,\n" +
                 "* 'completed' - отметить задачу как выполненную,\n" +
+                "* 'delete' - удалить таск," +
                 "* 'quit' - выход в меню";
     }
 
@@ -99,7 +100,7 @@ public class Organizer implements Serializable {
     {
         HashMap<Integer, String> answers = new HashMap<>();
         answers.put(86400000, "До дедлайна 24 часа! Не забудь про задание ");
-        answers.put(7200000, "Осталось 2 часа чтобы выполнить ");
+        answers.put(7200000, "Осталось 2 часа, чтобы выполнить ");
         answers.put(300000, "Всего 5 минут до дедлайна по задаче ");
         answers.put(0, "Упс! Задача просрочена :( ");
         return answers.get(key);
@@ -109,7 +110,7 @@ public class Organizer implements Serializable {
     {
         HashMap<Integer, String> answers = new HashMap<>();
         answers.put(180000, "До дедлайна 3 минуты! Не забудь про задание ");
-        answers.put(120000, "Осталось 2 минуты чтобы выполнить ");
+        answers.put(120000, "Осталось 2 минуты, чтобы выполнить ");
         answers.put(60000, "Всего 1 минута до дедлайна по задаче ");
         answers.put(0, "Упс! Задача просрочена :( ");
         return answers.get(key);
@@ -176,6 +177,16 @@ public class Organizer implements Serializable {
         }
     }
 
+    public static String delete(Bot bot, String command) {
+        try {
+            bot.organizer.remove(Integer.parseInt(command.split(" ")[1]));
+            return "Удалено";
+        } catch (IndexOutOfBoundsException e) {
+            return "Неверный номер задания";
+        } catch (Exception e) {
+            return "Неправильный ввод :( \nВведи 'completed [N задачи]'";
+        }
+    }
     public static String push(Bot bot, String command) {
         if (!Pattern.matches("(\\d+\\.){2}\\d+ .+", command))
             return notCorrect();

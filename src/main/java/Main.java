@@ -1,7 +1,6 @@
 import bot.Bot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.inject.internal.asm.$AnnotationVisitor;
 import com.vdurmont.emoji.EmojiParser;
 import commands.organizer.Flag;
 import commands.organizer.Organizer;
@@ -10,16 +9,15 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -70,10 +68,10 @@ public class Main extends TelegramLongPollingBot {
         }
     }
 
-    public static class chreak extends Thread{
+    public static class chreak extends Thread {
         @Override
         public void run() {
-            while (true){
+            while (true) {
                 for (Long a : users.keySet()) {
                     String res = Organizer.checkDeadlines(users.get(a), "");
                     if (!res.equals("")) {
@@ -87,7 +85,7 @@ public class Main extends TelegramLongPollingBot {
                     }
                 }
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -157,8 +155,7 @@ public class Main extends TelegramLongPollingBot {
         reader.close();
     }
 
-    public static String checkDeadlines()
-    {
+    public static String checkDeadlines() {
         return "";
     }
 }
